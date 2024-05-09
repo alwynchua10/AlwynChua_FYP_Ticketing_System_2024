@@ -1,1 +1,40 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f0f3f6;
+}
+
+.container-content {
+  max-width: 80%;
+  margin: 50px auto;
+  overflow: auto;
+  min-height: 700px;
+  border: 1px solid steelblue;
+  border-radius: 5px;
+  background-color: #ffffff;
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); /* Adjust shadow properties as needed */
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
