@@ -1,0 +1,42 @@
+.header-container {
+  background-color: #082c5c;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-container-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-container-left div {
+  margin-bottom: 5px;
+  margin-left: 15px;
+}
+
+.header-container-right {
+  display: flex;
+}
+
+.header-container-right button {
+  background-color: #fff;
+  border-radius: 5px;
+  width: 135px;
+  height: 55px; /* Set a fixed height for the buttons */
+  color: #000;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-left: 10px;
+  margin-right: 10px;
+  vertical-align: top; /* Align the buttons' baseline */
+}
+
+.header-container-right button:hover {
+  background-color: #001f3f;
+  color: #fff;
+}

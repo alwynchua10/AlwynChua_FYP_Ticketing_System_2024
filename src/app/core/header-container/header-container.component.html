@@ -1,0 +1,25 @@
+<div class="header-container">
+
+    <div class="header-container-left">
+        <div>Welcome, (Name)</div>
+        <div></div>
+        <div>(Current Page)</div>
+    </div>
+
+    <div class="header-container-right">
+        <div *ngIf="userRole === 'admin'">
+            <!-- Admin buttons -->
+            <button (click)="navigateToHome()">Reports</button>
+            <button (click)="navigateToCategories()">Categories</button>
+            <button (click)="navigateToUserManagement()">User Management</button>
+            <button (click)="navigateToReportStatistics()">Report Statistics</button>
+        </div>
+
+        <div *ngIf="userRole === 'user'">
+            <!-- User buttons -->
+            <button (click)="navigateToHome()">My Reports</button>
+            <button (click)="navigateToCreateReport()">Create Report</button>
+        </div>
+    </div>
+
+</div>
