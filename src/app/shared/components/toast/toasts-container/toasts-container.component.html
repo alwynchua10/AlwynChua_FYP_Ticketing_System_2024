@@ -1,0 +1,10 @@
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3" style="z-index: 1200">
+  <ngb-toast *ngFor="let toast of toastService.toasts;"
+    [class]="toast.classname"
+    [autohide]="true"
+    [delay]="toast.delay || 5000"
+    (hidden)="toastService.remove(toast)"
+  >
+    <ng-template [ngTemplateOutlet]="toast.template"></ng-template>
+  </ngb-toast>
+</div>

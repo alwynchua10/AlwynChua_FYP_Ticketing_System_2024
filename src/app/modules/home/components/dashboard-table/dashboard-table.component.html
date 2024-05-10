@@ -1,0 +1,74 @@
+<form>
+
+  <div class="filter-container">
+    <div class="filter-dropdown">
+      <select id="work-week" #workWeekSelect (change)="onWorkWeekChange(workWeekSelect.value)">
+        <option value="">All Work Weeks</option>
+        <option *ngFor="let week of weeks" [value]="week">Work Week {{ week }}</option>
+      </select>
+    </div>
+    <div class="filter-dropdown">
+      <app-date-picker (dateRangeSelected)="setDateRange($event.startDate, $event.endDate)"></app-date-picker>
+    </div>
+    <div class="clear-filters" *ngIf="!hasFiltersApplied()">
+      <button (click)="clearFilters()">Clear Filter</button>
+    </div>
+    <div class="span-box">
+      <span class="ml-3" *ngIf="service.loading$ | async">Loading...</span>
+    </div>
+    <div class="search-bar">
+      <input class="form-control ml-2" type="text" name="searchTerm" placeholder="Enter your search term" [(ngModel)]="service.searchTerm"/>
+    </div>
+  </div>
+
+  <div class="content">
+    <ng-container *ngIf="reportData$ | async as reportData">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+         <th class="col-md-1" sortable="reportID" (sort)="onSort($event)">REPORT NO</th>
+          <th class="col-md-2" sortable="name" (sort)="onSort($event)">SUBMITTED BY</th>
+         <th class="col-md-2" sortable="submissionDateTime" (sort)="onSort($event)">SUBMISSION DATE</th>
+          <th class="col-md-2" sortable="workWeek" (sort)="onSort($event)">WORK WEEK</th>
+         <th class="col-md-2" sortable="workHour" (sort)="onSort($event)">TOTAL WORK HOUR</th>
+         <th class="col-md-1">ACTIONS</th>
+       </tr>
+       </thead>
+       <tbody>
+        <tr *ngFor="let report of reportData$ | async;">
+          <td style="font-weight: bold;" scope="row">R{{ report.reportID.toString().padStart(4, '0') }}</td>
+         <td><ngb-highlight [result]="" [term]="service.searchTerm"></ngb-highlight></td>
+         <td><ngb-highlight [result]="report.submissionDateTime" [term]="service.searchTerm"></ngb-highlight></td>
+         <td>WW <ngb-highlight [result]="report.workWeek | number" [term]="service.searchTerm"></ngb-highlight></td>
+         <td><ngb-highlight [result]="report.totalWorkHour| number" [term]="service.searchTerm"></ngb-highlight> Hours</td>
+         <td>
+           <button class="editDelete" mat-icon-button color="primary" aria-label="Edit" (click)="editTask(report.reportID)">
+             <mat-icon>edit</mat-icon>
+           </button>
+         </td>
+       </tr>
+       </tbody>
+     </table>
+
+     <div class="empty-message" *ngIf="reportData.length === 0">
+      <p>No reports found.</p>
+    </div>
+    </ng-container>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <ngb-pagination 
+        [collectionSize]="(total$ | async) ?? 0" 
+        [(page)]="service.page" 
+        [pageSize]="service.pageSize"
+        [maxSize]="3"> <!--Adjust the page limit here :)-->
+    </ngb-pagination>
+
+    <select class="custom-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
+      <option [ngValue]="10">10 items per page</option>
+      <option [ngValue]="20">20 items per page</option>
+      <option [ngValue]="50">50 items per page</option>
+    </select>
+  </div>
+
+</form>

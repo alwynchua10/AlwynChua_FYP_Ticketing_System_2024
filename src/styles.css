@@ -1,3 +1,131 @@
+@import "node_modules/ngx-smart-modal/styles/ngx-smart-modal.css";
+
+.nsm-content {
+  top: 100px;
+  border-radius: 5px;
+  border: 1px solid steelblue;
+  height: auto;
+  width: auto;
+}
+
+.nsm-body {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.modal-header {
+  padding: 10px 0px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-header h5 {
+  margin: 0;
+  margin-left: 10px;
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.modal-body .form-group {
+  margin-bottom: 15px;
+}
+
+.modal-footer {
+  padding: 10px 10px;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.modal-footer button {
+  margin-left: 10px;
+}
+
+.modal-footer button.btn-primary {
+  background-color: #094179;
+  border: 1px;
+  border-radius: 4px;
+  width: 110px;
+  height: 40px; /* Set a fixed height for the buttons */
+  color: #ffffff;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.modal-footer button.btn-secondary {
+  background-color: #6c757d;
+  border: 1px;
+  border-radius: 4px;
+  width: 110px;
+  height: 40px;
+  color: #ffffff;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.modal-footer button.btn-primary:hover,
+.modal-footer button.btn-secondary:hover {
+  opacity: 0.8; /* Reduce opacity on hover */
+}
+
+.modal-body label {
+  display: block; /* Make labels block elements */
+  margin-bottom: -20px; /* Add margin below labels */
+}
+
+.modal-body select {
+  width: 150px;
+  padding: 8px; /* Add padding to inputs and textarea */
+  border: 1px solid #ced4da; /* Add border */
+  border-radius: 4px; /* Add border radius */
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 16px;
+}
+
+.modal-body input[type="number"] {
+  width: 70px;
+  padding: 8px; /* Add padding to inputs and textarea */
+  border: 1px solid #ced4da; /* Add border */
+  border-radius: 4px; /* Add border radius */
+}
+
+.modal-body textarea {
+  width: 100%; /* Make inputs and textarea fill the width of their container */
+  padding: 8px; /* Add padding to inputs and textarea */
+  border: 1px solid #ced4da; /* Add border */
+  border-radius: 4px; /* Add border radius */
+  height: 115px;
+}
+
+.modal-body textarea {
+  resize: vertical; /* Allow vertical resizing of textarea */
+}
+
+/* Optional: Add focus styles */
+.modal-body input[type="text"]:focus,
+.modal-body input[type="number"]:focus,
+.modal-body textarea:focus {
+  border-color: #80bdff; /* Change border color on focus */
+  outline: 0; /* Remove default outline */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Add box shadow on focus */
+}
+
+/*---------------------------------------------------------------------------------*/
+
 * {
   box-sizing: border-box;
   margin: 0;

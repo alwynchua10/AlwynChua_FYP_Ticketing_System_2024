@@ -1,0 +1,110 @@
+.report-form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.label-input {
+  padding: 10px 60px;
+  margin-left: 40px;
+  align-items: center;
+}
+
+.work-week-label {
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 10px; /* Add space between label and input */
+}
+
+.work-week-input {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.add-task {
+  padding: 20px 60px;
+  margin-top: 10px;
+  margin-right: 50px;
+}
+
+.add-task button {
+  padding: 10px 20px; /* Adjust padding to make the button bigger */
+  font-size: 16px; /* Increase font size */
+  border-radius: 5px; /* Add border-radius for rounded corners */
+}
+
+.add-task button:hover {
+  background-color: #b3b3b3; /* Change background color on hover */
+  cursor: pointer;
+}
+
+.submitCancel {
+  display: flex;
+  justify-content: right;
+}
+
+.no-tasks-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  color: rgb(137, 137, 137);
+}
+
+.submit-button {
+  background-color: #0c469d; /* Light blue background */
+  border: 1px solid #000; /* Black outline */
+  border-radius: 5px;
+  color: #ffffff; /* Black font color */
+  padding: 10px 20px; /* Padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition */
+  margin-top: 50px;
+  margin-bottom: 15px;
+}
+
+.submit-button:hover {
+  background-color: #0a326f; /* Slightly darker blue on hover */
+}
+
+.cancel-button {
+  background-color: #dc3545; /* Red background */
+  border: 1px solid #3e3e3e; /* Red border */
+  border-radius: 5px; /* Rounded corners */
+  color: #ffffff; /* White font color */
+  padding: 10px 20px; /* Padding */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth transition */
+  margin-left: 15px;
+  margin-top: 50px;
+  margin-bottom: 15px;
+}
+
+.cancel-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+.editDelete {
+  margin-left: -15px;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table th {
+  vertical-align: middle;
+}
+
+.total-hours {
+  display: flex;
+  justify-content: right;
+  margin-right: 279px;
+}
