@@ -9,7 +9,7 @@
     <div class="header-container-right">
         <div *ngIf="userRole === 'admin'">
             <!-- Admin buttons -->
-            <button (click)="navigateToHome()">Reports</button>
+            <button (click)="navigateToHome()">Tickets</button>
             <button (click)="navigateToCategories()">Categories</button>
             <button (click)="navigateToUserManagement()">User Management</button>
             <button (click)="navigateToReportStatistics()">Report Statistics</button>
@@ -17,8 +17,8 @@
 
         <div *ngIf="userRole === 'user'">
             <!-- User buttons -->
-            <button (click)="navigateToHome()">My Reports</button>
-            <button (click)="navigateToCreateReport()">Create Report</button>
+            <button (click)="navigateToHome()">My Tickets</button>
+            <button (click)="navigateToCreateReport()">Create Ticket</button>
         </div>
     </div>
 

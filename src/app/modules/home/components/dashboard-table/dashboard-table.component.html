@@ -26,7 +26,7 @@
       <table class="table table-striped">
         <thead>
         <tr>
-         <th class="col-md-1" sortable="reportID" (sort)="onSort($event)">REPORT NO</th>
+         <th class="col-md-1" sortable="reportID" (sort)="onSort($event)">TICKET NO</th>
           <th class="col-md-2" sortable="name" (sort)="onSort($event)">SUBMITTED BY</th>
          <th class="col-md-2" sortable="submissionDateTime" (sort)="onSort($event)">SUBMISSION DATE</th>
           <th class="col-md-2" sortable="workWeek" (sort)="onSort($event)">WORK WEEK</th>
@@ -51,7 +51,7 @@
      </table>
 
      <div class="empty-message" *ngIf="reportData.length === 0">
-      <p>No reports found.</p>
+      <p>No tickets found.</p>
     </div>
     </ng-container>
   </div>
