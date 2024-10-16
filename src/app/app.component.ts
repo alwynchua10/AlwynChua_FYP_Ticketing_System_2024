@@ -5,24 +5,22 @@ import { filter } from 'rxjs';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit{
-
+export class AppComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-      this.router.events.pipe(
-        filter(event => event instanceof NavigationEnd)
-      ).subscribe(() => {
-
-      });
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {});
   }
 
   showHeaderAndFooter(): boolean {
-
     const currentRoute = this.router.url;
-    return !currentRoute.includes('/login');
+    // Exclude header and footer on login and register pages
+    return !(
+      currentRoute.includes('/login') || currentRoute.includes('/register')
+    );
   }
-
 }

@@ -14,6 +14,8 @@ import { ManageCategoriesModule } from './modules/manage-categories/manage-categ
 import { CoreModule } from './core/core.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RegisterModule } from './modules/register/register.module';
+import { LoginModule } from './modules/login/login.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +30,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     ReportStatisticsModule,
     UserManagementModule,
     ManageCategoriesModule,
+    RegisterModule,
+    LoginModule,
     BrowserAnimationsModule,
     NgbModule,
   ],

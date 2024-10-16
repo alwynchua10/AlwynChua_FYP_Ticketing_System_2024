@@ -1,4 +1,4 @@
-.container-login {
+.container {
   max-width: 400px;
   margin: 130px auto;
   overflow: auto;
@@ -8,29 +8,29 @@
   border-radius: 5px;
   background-color: #ffffff;
   position: relative;
-  text-align: center; /* Center-align text */
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.container-login h2 {
+.container h2 {
   margin-bottom: 30px;
   margin-top: 20px;
 }
 
-.container-login form {
+.container form {
   width: 100%;
-  max-width: 300px; /* Adjust as needed */
+  max-width: 300px;
 }
 
-.container-login label {
+.container label {
   display: block;
-  text-align: left; /* Align label text to the left */
+  text-align: left;
   margin-bottom: 10px;
 }
 
-.container-login input {
+.container input {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -39,7 +39,7 @@
   box-sizing: border-box;
 }
 
-.container-login button {
+.container button {
   background-color: #3498db;
   color: #fff;
   padding: 10px;
@@ -49,7 +49,7 @@
   margin-top: 20px;
 }
 
-.container-login button:hover {
+.container button:hover {
   background-color: #2980b9;
 }
 

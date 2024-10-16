@@ -8,6 +8,7 @@ import { EditReportComponent } from './modules/edit-report/pages/edit-report/edi
 import { UserManagementComponent } from './modules/user-management/pages/user-management/user-management.component';
 import { ManageCategoriesComponent } from './modules/manage-categories/pages/manage-categories/manage-categories.component';
 import { ReportStatisticsComponent } from './modules/report-statistics/pages/report-statistics/report-statistics.component';
+import { RegisterComponent } from './modules/register/pages/register/register.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
   },
   {
     path: 'create-report',
