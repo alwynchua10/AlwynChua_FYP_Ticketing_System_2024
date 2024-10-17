@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { UserService } from 'src/app/core/APIservices/user.service'; // Ensure this path is correct
+import { UserService } from 'src/app/core/APIservices/user.service';
 import { Router } from '@angular/router';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
+import { UserDto } from 'src/app/core/models/user.dto';
 
 @Component({
   selector: 'app-register',
@@ -11,12 +12,14 @@ import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
+  errorMessage: string = ''; // Declare errorMessage here
+  defaultRoleId: number = 1; // Set your default role ID here
 
   faCircleInfo = faCircleInfo;
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService, // Make sure this matches the service name
+    private userService: UserService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
@@ -28,13 +31,23 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      this.userService.register(this.registerForm.value).subscribe({
+      const userData: UserDto = {
+        UserName: this.registerForm.value.userName,
+        UserEmail: this.registerForm.value.userEmail,
+        Password: this.registerForm.value.password, // Send raw password
+        RoleID: this.defaultRoleId, // Optional if applicable
+      };
+
+      this.userService.register(userData).subscribe({
         next: (response) => {
-          console.log('Registration Successful', response);
-          this.router.navigate(['/login']);
+          this.goToLogin();
         },
         error: (error) => {
-          console.error('Registration Failed', error);
+          if (error.status === 409) {
+            this.errorMessage = 'User already exists.';
+          } else {
+            this.errorMessage = 'Registration failed. Please try again.';
+          }
         },
       });
     }

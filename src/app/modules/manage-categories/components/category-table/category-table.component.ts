@@ -125,6 +125,7 @@ export class CategoryTableComponent implements OnInit {
 
   deleteCategory() {
     if (this.categoryToDeleteId !== undefined) {
+      console.log('Deleting category with ID:', this.categoryToDeleteId); // Add this line
       this.categoryService.deleteCategory(this.categoryToDeleteId).subscribe(
         () => {
           this.loadCategories();

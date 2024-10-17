@@ -27,7 +27,7 @@ export class CategoryService {
   }
 
   deleteCategory(categoryId: number): Observable<void> {
-    const deleteUrl = `${this.apiUrl}/DeleteCategory/${categoryId}`;
+    const deleteUrl = `${this.apiUrl}/${categoryId}`;
     return this.http.delete<void>(deleteUrl);
   }
 }

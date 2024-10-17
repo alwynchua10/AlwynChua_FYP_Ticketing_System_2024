@@ -1,8 +1,9 @@
 export interface UserDto {
+  UserId?: number;
   UserName: string;
   UserEmail: string;
-  PasswordHash: string;
-  RoleID?: number;
+  Password?: string;
+  RoleID: number | null;
 }
 
 export interface LoginDto {

@@ -9,11 +9,13 @@ import { UserManagementComponent } from './modules/user-management/pages/user-ma
 import { ManageCategoriesComponent } from './modules/manage-categories/pages/manage-categories/manage-categories.component';
 import { ReportStatisticsComponent } from './modules/report-statistics/pages/report-statistics/report-statistics.component';
 import { RegisterComponent } from './modules/register/pages/register/register.component';
+import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'login',
@@ -26,22 +28,27 @@ const routes: Routes = [
   {
     path: 'create-report',
     component: CreateReportComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'edit-report/:reportID',
     component: EditReportComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'user-management',
     component: UserManagementComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'manage-categories',
     component: ManageCategoriesComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'report-statistics',
     component: ReportStatisticsComponent,
+    canActivate: [AuthGuard],
   },
 ];
 
