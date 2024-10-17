@@ -21,7 +21,7 @@ export class UserTableComponent implements OnInit {
   data: UserDto[] = [];
   editMode = false;
   editUser: UserDto | null = null;
-  ngUser: UserDto = { UserName: '', UserEmail: '', RoleID: null }; // Initialize a UserDto object
+  ngUser: UserDto = { userName: '', userEmail: '', roleID: null }; // Initialize a UserDto object
   isLoading = false;
 
   constructor(
@@ -35,21 +35,21 @@ export class UserTableComponent implements OnInit {
   }
 
   loadUsers() {
-    this.isLoading = true; // Set isLoading to true when loading starts
+    this.isLoading = true;
     this.userService.getUsers().subscribe(
-      (data: any[]) => {
-        console.log('Fetched users:', data); // Log the data here
+      (data: UserDto[]) => {
+        console.log('Fetched users:', data);
         this.data = data.map((user) => ({
-          UserId: user.UserId, // Use the original property names
-          UserName: user.UserName, // Correctly map UserName
-          UserEmail: user.UserEmail, // Correctly map UserEmail
-          RoleID: user.RoleID || null, // Map RoleID if available
+          userID: user.userID || 0, // Provide a default value if UserId can be undefined
+          userName: user.userName,
+          userEmail: user.userEmail,
+          roleID: user.roleID, // Provide a default value if RoleID can be undefined
         }));
-        this.isLoading = false; // Set isLoading to false when loading is complete
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching users:', error);
-        this.isLoading = false; // Set isLoading to false in case of error
+        this.isLoading = false;
       }
     );
   }
@@ -60,8 +60,8 @@ export class UserTableComponent implements OnInit {
       return;
     }
 
-    if (this.editUser && this.editUser.UserId) {
-      this.userService.updateUser(this.editUser.UserId, this.ngUser).subscribe(
+    if (this.editUser && this.editUser.userID) {
+      this.userService.updateUser(this.editUser.userID, this.ngUser).subscribe(
         () => {
           this.loadUsers();
           this.closeModal();
@@ -84,7 +84,7 @@ export class UserTableComponent implements OnInit {
       );
     }
     this.editMode = false;
-    this.ngUser = { UserName: '', UserEmail: '', RoleID: null }; // Reset ngUser after save
+    this.ngUser = { userName: '', userEmail: '', roleID: null }; // Reset ngUser after save
   }
 
   onEdit(user: UserDto) {
@@ -135,7 +135,7 @@ export class UserTableComponent implements OnInit {
   }
 
   closeModal() {
-    this.ngUser = { UserName: '', UserEmail: '', RoleID: null }; // Reset user data
+    this.ngUser = { userName: '', userEmail: '', roleID: null }; // Reset user data
     this.ngxSmartModalService.close('myModal');
     this.editMode = false;
   }

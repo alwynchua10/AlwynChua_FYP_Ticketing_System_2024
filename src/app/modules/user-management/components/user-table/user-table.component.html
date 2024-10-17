@@ -16,15 +16,15 @@
         <form #myForm="ngForm">
           <div class="form-group">
             <label for="username" class="col-form-label">Username:</label>
-            <input type="text" name="username" ngModel class="form-control" id="username" required [(ngModel)]="ngUser.UserName">
+            <input type="text" name="username" ngModel class="form-control" id="username" required [(ngModel)]="ngUser.userName">
           </div>
           <div class="form-group">
             <label for="email" class="col-form-label">Email:</label>
-            <input type="email" name="email" ngModel class="form-control" id="email" required [(ngModel)]="ngUser.UserEmail">
+            <input type="email" name="email" ngModel class="form-control" id="email" required [(ngModel)]="ngUser.userEmail">
           </div>
           <div class="form-group">
             <label for="role" class="col-form-label">Role ID:</label>
-            <input type="number" name="roleId" ngModel class="form-control" id="role" required [(ngModel)]="ngUser.RoleID">
+            <input type="number" name="roleId" ngModel class="form-control" id="role" required [(ngModel)]="ngUser.roleID">
           </div>
         </form>
       </div>
@@ -61,13 +61,13 @@
         </thead>
         <tbody>
           <tr *ngFor="let user of data">
-            <td>{{ user.UserId }}</td>
-            <td>{{ user.UserName }}</td>
-            <td>{{ user.UserEmail }}</td>
-            <td>{{ user.RoleID }}</td>
+            <td>{{ user.userID }}</td>
+            <td>{{ user.userName }}</td>
+            <td>{{ user.userEmail }}</td>
+            <td>{{ user.roleID }}</td>
             <td>
               <mat-icon style="color: green; cursor: pointer;" (click)="onEdit(user)">edit</mat-icon>&nbsp;
-              <mat-icon style="color: red; cursor: pointer;" (click)="user.UserId ? openConfirmationModal(user.UserId) : null">delete</mat-icon>
+              <mat-icon style="color: red; cursor: pointer;" (click)="user.userID ? openConfirmationModal(user.userID) : null">delete</mat-icon>
             </td>
           </tr>
         </tbody>

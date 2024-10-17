@@ -1,0 +1,28 @@
+.cat-table {
+  margin-top: 10px;
+}
+
+tr {
+  font-size: 18px;
+}
+
+.add-category {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 60px;
+  margin-top: 10px;
+  margin-right: 50px;
+}
+
+.add-category button {
+  background-color: rgb(43, 43, 124);
+  color: white;
+  padding: 10px 20px; /* Adjust padding as needed */
+  border: none;
+  border-radius: 5px; /* Optional: add rounded corners */
+  cursor: pointer;
+}
+
+.add-category button:hover {
+  background-color: rgb(27, 27, 84); /* Change color on hover if desired */
+}

@@ -1,12 +1,12 @@
 export interface UserDto {
-  UserId?: number;
-  UserName: string;
-  UserEmail: string;
-  Password?: string;
-  RoleID: number | null;
+  userID?: number;
+  userName: string;
+  userEmail: string;
+  passwordHash?: string;
+  roleID: number | null;
 }
 
 export interface LoginDto {
-  UserEmail: string;
-  Password: string;
+  userEmail: string;
+  passwordHash: string;
 }

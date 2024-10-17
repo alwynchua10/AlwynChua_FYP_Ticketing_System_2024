@@ -32,10 +32,10 @@ export class RegisterComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       const userData: UserDto = {
-        UserName: this.registerForm.value.userName,
-        UserEmail: this.registerForm.value.userEmail,
-        Password: this.registerForm.value.password, // Send raw password
-        RoleID: this.defaultRoleId, // Optional if applicable
+        userName: this.registerForm.value.userName,
+        userEmail: this.registerForm.value.userEmail,
+        passwordHash: this.registerForm.value.password, // Send raw password
+        roleID: this.defaultRoleId, // Optional if applicable
       };
 
       this.userService.register(userData).subscribe({

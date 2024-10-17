@@ -24,10 +24,10 @@ export class UserService {
   // Register a new user (Adjusted to match the component's data format)
   register(userData: UserDto): Observable<UserDto> {
     return this.http.post<UserDto>(`${this.apiUrl}/register`, {
-      userName: userData.UserName,
-      userEmail: userData.UserEmail,
-      password: userData.Password,
-      roleID: userData.RoleID,
+      userName: userData.userName,
+      userEmail: userData.userEmail,
+      password: userData.passwordHash,
+      roleID: userData.roleID,
     });
   }
 
@@ -39,9 +39,9 @@ export class UserService {
   // Update user details (Adjusted to ensure correct property casing)
   updateUser(id: number, userData: UserDto): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, {
-      userName: userData.UserName,
-      userEmail: userData.UserEmail,
-      roleID: userData.RoleID,
+      userName: userData.userName,
+      userEmail: userData.userEmail,
+      roleID: userData.roleID,
     });
   }
 
