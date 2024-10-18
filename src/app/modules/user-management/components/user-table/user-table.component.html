@@ -1,4 +1,4 @@
-<div class="report-form">
+<div class="report-form" style="padding-top: 30px;">
   
     <ngx-smart-modal #myModal identifier="myModal" [closable]="false" [dismissable]="false" [escapable]="false">
       <div class="modal-header">
@@ -15,15 +15,15 @@
       <div class="modal-body">
         <form #myForm="ngForm">
           <div class="form-group">
-            <label for="username" class="col-form-label">Username:</label>
+            <label for="username" class="col-form-label" style="padding-bottom: 20px;">Username:</label>
             <input type="text" name="username" ngModel class="form-control" id="username" required [(ngModel)]="ngUser.userName">
           </div>
           <div class="form-group">
-            <label for="email" class="col-form-label">Email:</label>
+            <label for="email" class="col-form-label" style="padding-bottom: 20px;">Email:</label>
             <input type="email" name="email" ngModel class="form-control" id="email" required [(ngModel)]="ngUser.userEmail">
           </div>
           <div class="form-group">
-            <label for="role" class="col-form-label">Role ID:</label>
+            <label for="role" class="col-form-label" style="padding-bottom: 20px;">Role ID:</label>
             <input type="number" name="roleId" ngModel class="form-control" id="role" required [(ngModel)]="ngUser.roleID">
           </div>
         </form>
@@ -67,7 +67,7 @@
             <td>{{ user.roleID }}</td>
             <td>
               <mat-icon style="color: green; cursor: pointer;" (click)="onEdit(user)">edit</mat-icon>&nbsp;
-              <mat-icon style="color: red; cursor: pointer;" (click)="user.userID ? openConfirmationModal(user.userID) : null">delete</mat-icon>
+              <!-- <mat-icon style="color: red; cursor: pointer;" (click)="user.userID ? openConfirmationModal(user.userID) : null">delete</mat-icon> -->
             </td>
           </tr>
         </tbody>
