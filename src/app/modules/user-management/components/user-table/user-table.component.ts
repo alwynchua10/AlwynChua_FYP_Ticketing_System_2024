@@ -61,6 +61,7 @@ export class UserTableComponent implements OnInit {
     }
 
     if (this.editUser && this.editUser.userID) {
+      // Update user logic
       this.userService.updateUser(this.editUser.userID, this.ngUser).subscribe(
         () => {
           this.loadUsers();
@@ -72,6 +73,7 @@ export class UserTableComponent implements OnInit {
         }
       );
     } else {
+      // Add user logic
       this.userService.register(this.ngUser).subscribe(
         () => {
           this.loadUsers();
@@ -83,13 +85,15 @@ export class UserTableComponent implements OnInit {
         }
       );
     }
+
     this.editMode = false;
     this.ngUser = { userName: '', userEmail: '', roleID: null }; // Reset ngUser after save
   }
 
   onEdit(user: UserDto) {
     this.editMode = true;
-    this.ngUser = { ...user }; // Spread the user object to ngUser for editing
+    this.editUser = { ...user }; // Also store the user being edited
+    this.ngUser = { ...user };
     this.ngxSmartModalService.open('myModal');
   }
 

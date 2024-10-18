@@ -12,7 +12,7 @@ export class HeaderContainerComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.userRole = 'admin';
+    this.userRole = 'user';
   }
 
   navigateToHome(): void {

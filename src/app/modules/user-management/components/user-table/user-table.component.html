@@ -8,7 +8,7 @@
           </ng-container>
           <ng-template #addUserLabel>
             Add a New User
-          </ng-template>
+          </ng-template>          
         </h5>
       </div>
   
@@ -16,15 +16,15 @@
         <form #myForm="ngForm">
           <div class="form-group">
             <label for="username" class="col-form-label" style="padding-bottom: 20px;">Username:</label>
-            <input type="text" name="username" ngModel class="form-control" id="username" required [(ngModel)]="ngUser.userName">
+            <input type="text" name="username" [(ngModel)]="ngUser.userName" class="form-control" id="username" required>
           </div>
           <div class="form-group">
             <label for="email" class="col-form-label" style="padding-bottom: 20px;">Email:</label>
-            <input type="email" name="email" ngModel class="form-control" id="email" required [(ngModel)]="ngUser.userEmail">
+            <input type="email" name="email" [(ngModel)]="ngUser.userEmail" class="form-control" id="email" required>
           </div>
           <div class="form-group">
             <label for="role" class="col-form-label" style="padding-bottom: 20px;">Role ID:</label>
-            <input type="number" name="roleId" ngModel class="form-control" id="role" required [(ngModel)]="ngUser.roleID">
+            <input type="number" name="roleId" [(ngModel)]="ngUser.roleID" class="form-control" id="role" required>
           </div>
         </form>
       </div>
