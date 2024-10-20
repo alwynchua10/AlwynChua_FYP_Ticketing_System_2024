@@ -1,0 +1,12 @@
+.form-group label {
+  font-weight: bold;
+  font-size: 1.2em; /* Increase the label size */
+}
+
+.form-control {
+  width: 300px; /* Set a specific width for the input fields */
+}
+
+button {
+  margin-top: 10px;
+}

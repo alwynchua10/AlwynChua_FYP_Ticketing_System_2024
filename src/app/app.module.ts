@@ -16,6 +16,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterModule } from './modules/register/register.module';
 import { LoginModule } from './modules/login/login.module';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,6 +36,8 @@ import { LoginModule } from './modules/login/login.module';
     LoginModule,
     BrowserAnimationsModule,
     NgbModule,
+    FormsModule,
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

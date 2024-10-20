@@ -8,9 +8,10 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TicketFormComponent } from './component/ticket-form/ticket-form.component';
 
 @NgModule({
-  declarations: [CreateReportComponent],
+  declarations: [CreateReportComponent, TicketFormComponent],
   imports: [
     CommonModule,
     CoreModule,
