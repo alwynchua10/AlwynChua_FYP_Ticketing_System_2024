@@ -98,4 +98,10 @@ export class UserService {
   deleteUser(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  searchUsers(term: string): Observable<UserDto[]> {
+    return this.http.get<UserDto[]>(
+      `https://localhost:7179/api/Tickets/search?searchTerm=${term}`
+    );
+  }
 }

@@ -71,16 +71,25 @@ button:hover {
   transform: scale(1.02); /* Slightly enlarge the button on hover */
 }
 
-/* Welcome message styling */
-.welcome-message {
-  margin-top: 15px; /* Space above the welcome message */
-  font-size: 1em; /* Font size for the welcome message */
-  color: #555; /* Slightly lighter color */
-  font-style: italic; /* Italic style for the welcome message */
+/* Suggestions dropdown */
+.suggestions-dropdown ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background: #fff; /* White background */
+  border: 1px solid #ccc; /* Add a border */
+  border-radius: 4px;
+  max-height: 150px; /* Limit the height of the dropdown */
+  overflow-y: auto; /* Enable scrolling */
+  position: absolute; /* Position it over other elements */
+  width: 100%;
 }
 
-input:disabled {
-  background-color: #e9ecef; /* Light gray background for disabled state */
-  opacity: 1; /* Ensure opacity is fully visible */
-  cursor: not-allowed; /* Indicate that it is not interactable */
+.suggestions-dropdown li {
+  padding: 10px; /* Padding inside suggestions */
+  cursor: pointer;
+}
+
+.suggestions-dropdown li:hover {
+  background-color: #f0f0f0; /* Background on hover */
 }

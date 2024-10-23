@@ -13,7 +13,7 @@ import { UserDto } from 'src/app/core/models/user.dto';
 export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string = ''; // Declare errorMessage here
-  defaultRoleId: number = 1; // Set your default role ID here
+  defaultRoleId: number = 3; // Set your default role ID here
 
   faCircleInfo = faCircleInfo;
 

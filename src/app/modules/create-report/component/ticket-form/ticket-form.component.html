@@ -7,13 +7,22 @@
         type="text"
         id="loggedInUserName"
         class="form-control"
-        [(ngModel)]="loggedInUserName"
+        [(ngModel)]="userSearchTerm"
         name="loggedInUserName"
+        (input)="onUserSearch()"
         [disabled]="userRole !== '1' && userRole !== '2'"
       />
+      <!-- Suggestions for searching users -->
+      <div *ngIf="userSuggestions.length > 0" class="suggestions-dropdown">
+        <ul>
+          <li *ngFor="let user of userSuggestions" (click)="selectUser(user)">
+            {{ user.userName }} ({{ user.userEmail }})
+          </li>
+        </ul>
+      </div>
     </div>
     
-
+    <!-- Category Selection -->
     <div class="grid-item">
       <label for="categoryID">Category</label>
       <select
@@ -29,6 +38,7 @@
       </select>
     </div>
 
+    <!-- Status Selection -->
     <div class="grid-item">
       <label for="statusID">Status</label>
       <select
@@ -44,6 +54,7 @@
       </select>
     </div>
 
+    <!-- Priority Selection -->
     <div class="grid-item">
       <label for="priorityID">Priority</label>
       <select
@@ -60,6 +71,7 @@
     </div>
   </div>
 
+  <!-- Title Input -->
   <div class="form-group">
     <label for="title">Title</label>
     <input
@@ -72,6 +84,7 @@
     />
   </div>
 
+  <!-- Description Input -->
   <div class="form-group">
     <label for="description">Description</label>
     <textarea
@@ -83,5 +96,6 @@
     ></textarea>
   </div>
 
+  <!-- Submit Button -->
   <button type="submit" class="btn btn-primary">Create Ticket</button>
 </form>

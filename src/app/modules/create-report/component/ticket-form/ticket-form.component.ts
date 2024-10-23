@@ -21,15 +21,17 @@ export class TicketFormComponent implements OnInit {
     description: '',
     statusID: 0,
     priorityID: 0,
-    userID: 0, // This will be set to the logged-in user's ID
+    userID: 0, // This will be set to the logged-in user's ID or selected user's ID
     categoryID: 0,
   };
   statuses: Status[] = [];
   priorities: Priority[] = [];
   categories: Category[] = [];
   loggedInUser: UserDto | null = null; // To store logged-in user info
-  loggedInUserName: string = ''; // To display the user's name
-  userRole: string = ''; // To store the user's role
+  loggedInUserName: string = ''; // To display the logged-in user's name
+  userRole: string = ''; // To store the logged-in user's role
+  userSearchTerm: string = '';
+  userSuggestions: UserDto[] = []; // Store fetched user suggestions
 
   constructor(
     private router: Router,
@@ -76,7 +78,34 @@ export class TicketFormComponent implements OnInit {
     }
   }
 
+  onUserSearch() {
+    if (this.userSearchTerm.length > 0) {
+      // Minimum 3 characters to search
+      this.userService.searchUsers(this.userSearchTerm).subscribe({
+        next: (users: UserDto[]) => {
+          this.userSuggestions = users; // Store the suggestions
+        },
+        error: (error) => {
+          console.error('Error fetching user suggestions:', error);
+        },
+      });
+    } else {
+      this.userSuggestions = []; // Clear suggestions if input is less than 3 characters
+    }
+  }
+
+  selectUser(user: UserDto) {
+    this.loggedInUserName = user.userName; // Display the selected user's name
+    this.ticket.userID = user.userID ?? 0; // Set userID to 0 if it's undefined
+    this.userSuggestions = []; // Clear suggestions after selection
+  }
+
   onSubmit() {
+    if (this.ticket.userID === 0) {
+      console.warn('No user selected for the ticket');
+      return;
+    }
+
     this.ticketService.createTicket(this.ticket).subscribe({
       next: (response) => {
         console.log('Ticket created successfully', response);
