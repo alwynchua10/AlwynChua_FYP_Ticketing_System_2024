@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { UserDto, LoginDto } from '../models/user.dto';
 import { jwtDecode } from 'jwt-decode';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -12,14 +13,14 @@ export class UserService {
   private apiUrl = 'https://localhost:7179/api/Users';
   private token: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   getUserIdFromToken(): number | null {
     const token = this.getToken();
     if (token) {
       try {
         const decodedToken: any = jwtDecode(token);
-        return decodedToken?.UserID || null; // Adjust 'UserID' based on your token structure
+        return decodedToken?.nameid || null; // Adjust 'nameid' based on your token structure
       } catch (error) {
         console.error('Error decoding token', error);
         return null;
@@ -28,7 +29,7 @@ export class UserService {
     return null;
   }
 
-  // Get all users (Updated to use UserDto[])
+  // Get all users
   getUsers(): Observable<UserDto[]> {
     return this.http.get<UserDto[]>(this.apiUrl);
   }
@@ -38,7 +39,7 @@ export class UserService {
     return this.http.get<UserDto>(`${this.apiUrl}/${id}`);
   }
 
-  // Register a new user (Adjusted to match the component's data format)
+  // Register a new user
   register(userData: UserDto): Observable<UserDto> {
     return this.http.post<UserDto>(`${this.apiUrl}/register`, {
       userName: userData.userName,
@@ -48,20 +49,29 @@ export class UserService {
     });
   }
 
-  // Log in a user (returns a token or user info depending on your setup)
-  login(loginData: LoginDto): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/login`, loginData).pipe(
-      tap((response) => {
-        this.token = response.token; // Save token
-        localStorage.setItem('token', this.token || '');
-      })
-    );
+  login(userEmail: string, password: string): Observable<any> {
+    return this.http
+      .post<any>(`${this.apiUrl}/login`, { userEmail, password })
+      .pipe(
+        tap((response) => {
+          if (response.token && response.userID && response.roleID) {
+            localStorage.setItem('token', response.token); // Store the token
+            localStorage.setItem('userID', response.userID); // Store the UserID
+            localStorage.setItem('roleID', response.roleID); // Store the RoleID
+          } else {
+            console.error('No token, UserID, or RoleID found in response');
+          }
+        })
+      );
   }
 
-  // Log out user
-  logout(): void {
-    this.token = null;
+  logout() {
+    // Remove the token and user ID from storage
     localStorage.removeItem('token');
+    localStorage.removeItem('userID'); // Adjust if you're storing it differently
+    localStorage.removeItem('roleID');
+    // Redirect to login page
+    this.router.navigate(['/login']);
   }
 
   // Check if the user is logged in
@@ -69,12 +79,13 @@ export class UserService {
     return !!this.token || !!localStorage.getItem('token');
   }
 
-  // Method to retrieve the token
   getToken(): string | null {
-    return this.token || localStorage.getItem('token');
+    const tokenFromStorage = localStorage.getItem('token');
+    console.log('Retrieved Token:', tokenFromStorage); // Log for debugging
+    return this.token || tokenFromStorage; // Return token from memory or storage
   }
 
-  // Update user details (Adjusted to ensure correct property casing)
+  // Update user details
   updateUser(id: number, userData: UserDto): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, {
       userName: userData.userName,

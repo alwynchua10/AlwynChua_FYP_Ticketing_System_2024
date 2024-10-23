@@ -7,18 +7,23 @@
     </div>
 
     <div class="header-container-right">
+        <!-- Admin buttons -->
         <div *ngIf="userRole === 'admin'">
-            <!-- Admin buttons -->
             <button (click)="navigateToHome()">Tickets</button>
             <button (click)="navigateToCategories()">Categories</button>
             <button (click)="navigateToUserManagement()">User Management</button>
             <button (click)="navigateToReportStatistics()">Report Statistics</button>
         </div>
 
+        <!-- User buttons -->
         <div *ngIf="userRole === 'user'">
-            <!-- User buttons -->
             <button (click)="navigateToHome()">My Tickets</button>
             <button (click)="navigateToCreateReport()">Create Ticket</button>
+        </div>
+
+        <!-- Agent buttons -->
+        <div *ngIf="userRole === 'agent'">
+            <button (click)="navigateToHome()">Assigned Tickets</button>
         </div>
     </div>
 

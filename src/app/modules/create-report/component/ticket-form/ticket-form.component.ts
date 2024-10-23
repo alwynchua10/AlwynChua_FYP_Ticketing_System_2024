@@ -7,6 +7,7 @@ import { UserService } from 'src/app/core/APIservices/user.service';
 import { Status } from 'src/app/core/models/status';
 import { Priority } from 'src/app/core/models/priority';
 import { Category } from 'src/app/core/models/category';
+import { UserDto } from 'src/app/core/models/user.dto';
 
 @Component({
   selector: 'app-ticket-form',
@@ -19,12 +20,14 @@ export class TicketFormComponent implements OnInit {
     description: '',
     statusID: 0,
     priorityID: 0,
-    userID: 1, // Set this to the logged-in user's ID
+    userID: 0, // This will be set to the logged-in user's ID
     categoryID: 0,
   };
-  statuses: Status[] = []; // Define the type for statuses
-  priorities: Priority[] = []; // Define the type for priorities
-  categories: Category[] = []; // Define the type for categories
+  statuses: Status[] = [];
+  priorities: Priority[] = [];
+  categories: Category[] = [];
+  loggedInUser: UserDto | null = null; // To store logged-in user info
+  loggedInUserName: string = ''; // To display the user's name
 
   constructor(
     private ticketService: TicketService,
@@ -35,6 +38,7 @@ export class TicketFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Fetch statuses, priorities, and categories
     this.statusService.getStatuses().subscribe((data: Status[]) => {
       this.statuses = data;
     });
@@ -46,6 +50,27 @@ export class TicketFormComponent implements OnInit {
     this.categoryService.getCategories().subscribe((data: Category[]) => {
       this.categories = data;
     });
+
+    // Get the logged-in user's ID from localStorage
+    const userId = this.userService.getUserIdFromToken();
+    if (userId) {
+      this.ticket.userID = userId; // Set userID in the ticket object
+      this.userService.getUserById(this.ticket.userID).subscribe({
+        next: (user: UserDto) => {
+          this.loggedInUser = user; // Store the logged-in user
+          this.loggedInUserName = user.userName; // Get the username
+
+          // Debugging output
+          console.log('Fetched User:', this.loggedInUser);
+          console.log('Logged In User Name:', this.loggedInUserName);
+        },
+        error: (error) => {
+          console.error('Error fetching user:', error); // Handle errors here
+        },
+      });
+    } else {
+      console.warn('No user ID found in localStorage'); // Log warning when no user ID is found
+    }
   }
 
   onSubmit() {

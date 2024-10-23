@@ -3,7 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { DashboardTableService } from './dashboard-table.service';
 import { NgbdSortableHeader, SortEvent } from './sortable.directive';
-import { ReportData } from 'src/app/core/models/reportWithTasks';
+import { TicketDto } from 'src/app/core/models/ticket.dto';
 import { Router } from '@angular/router';
 
 @Component({
@@ -13,28 +13,26 @@ import { Router } from '@angular/router';
   providers: [DashboardTableService, DecimalPipe],
 })
 export class DashboardTableComponent {
-  weeks: number[] = [];
-  reportData$!: Observable<ReportData[]>;
+  ticketData$!: Observable<TicketDto[]>;
   total$: Observable<number>;
 
   @ViewChildren(NgbdSortableHeader) headers!: QueryList<NgbdSortableHeader>;
-  @ViewChildren('workWeekSelect')
-  workWeekSelect!: ElementRef<HTMLSelectElement>;
-  @ViewChildren('datePickerComponent') datePickerComponent!: ElementRef<any>;
 
   constructor(public service: DashboardTableService, private router: Router) {
-    this.reportData$ = service.reportData$;
+    this.ticketData$ = service.ticketData$;
     this.total$ = service.total$;
-    for (let i = 1; i <= 52; i++) {
-      this.weeks.push(i);
+  }
+
+  ngOnInit(): void {
+    const userId = localStorage.getItem('userID');
+    if (userId) {
+      this.service.setUserId(+userId); // Set user ID in DashboardTableService
+    } else {
+      console.error('No user ID found in local storage');
     }
   }
 
-  filterByDateRange(dateRange: { startDate: Date; endDate: Date }) {
-    this.service.filterByDateRange(dateRange.startDate, dateRange.endDate);
-  }
-
-  setDateRange(startDate: Date, endDate: Date) {
+  setDateRange(startDate: Date | null, endDate: Date | null) {
     console.log('Received startDate:', startDate);
     console.log('Received endDate:', endDate);
     this.service.setDateRange(startDate, endDate);
@@ -42,13 +40,12 @@ export class DashboardTableComponent {
 
   clearFilters(): void {
     this.service.clearFilters();
-    window.location.reload();
+    window.location.reload(); // Consider removing this to keep the view smoother
   }
 
   hasFiltersApplied(): boolean {
     return (
       this.service.searchTerm !== '' ||
-      this.service.selectedWorkWeek !== undefined ||
       (this.service.startDate !== null && this.service.endDate !== null)
     );
   }
@@ -60,15 +57,13 @@ export class DashboardTableComponent {
       }
     });
 
-    this.service.sortColumn = column;
-    this.service.sortDirection = direction;
+    // Ensure direction is a valid value
+    if (direction === 'asc' || direction === 'desc') {
+      this.service.sort(column as keyof TicketDto, direction);
+    }
   }
 
-  editTask(reportID: number) {
-    this.router.navigate(['/edit-report', reportID]);
-  }
-
-  onWorkWeekChange(workWeek: string) {
-    this.service.selectedWorkWeek = workWeek;
+  editTicket(ticketID: number) {
+    this.router.navigate(['/edit-ticket', ticketID]); // Update route as needed
   }
 }

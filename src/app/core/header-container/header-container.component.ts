@@ -12,7 +12,14 @@ export class HeaderContainerComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.userRole = 'user';
+    const roleID = localStorage.getItem('roleID');
+    if (roleID === '1') {
+      this.userRole = 'admin';
+    } else if (roleID === '2') {
+      this.userRole = 'agent';
+    } else if (roleID === '3') {
+      this.userRole = 'user';
+    }
   }
 
   navigateToHome(): void {
@@ -32,6 +39,6 @@ export class HeaderContainerComponent implements OnInit {
   }
 
   navigateToReportStatistics(): void {
-    this.router.navigate(['report-statistics']);
+    this.router.navigate(['/report-statistics']);
   }
 }

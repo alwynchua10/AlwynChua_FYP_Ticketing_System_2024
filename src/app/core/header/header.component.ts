@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { faSignOut } from '@fortawesome/free-solid-svg-icons';
-import { Router } from '@angular/router'; // Import Router
+import { Router } from '@angular/router';
+import { UserService } from '../APIservices/user.service';
 
 @Component({
   selector: 'app-header',
@@ -10,13 +11,10 @@ import { Router } from '@angular/router'; // Import Router
 export class HeaderComponent {
   faSignOut = faSignOut;
 
-  constructor(private router: Router) {} // Inject Router
+  constructor(private router: Router, private userService: UserService) {} // Inject UserService
 
   onClick() {
-    // Clear the auth token from local storage
-    localStorage.removeItem('authToken');
-
-    // Redirect to the login page
-    this.router.navigate(['/login']);
+    this.userService.logout(); // Call the logout method
+    this.router.navigate(['/login']); // Redirect to the login page
   }
 }

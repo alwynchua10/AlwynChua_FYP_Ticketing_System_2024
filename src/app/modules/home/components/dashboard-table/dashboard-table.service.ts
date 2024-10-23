@@ -1,237 +1,166 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import {
-  catchError,
-  debounceTime,
-  delay,
-  switchMap,
-  tap,
-  map,
-} from 'rxjs/operators';
-import { ReportData } from 'src/app/core/models/reportWithTasks';
-import { SortDirection } from './sortable.directive';
-
-interface SearchResult {
-  reportData: ReportData[];
-  total: number;
-}
-
-interface State {
-  page: number;
-  pageSize: number;
-  searchTerm: string;
-  sortColumn: string;
-  sortDirection: SortDirection;
-  startDate?: Date;
-  endDate?: Date;
-  selectedWorkWeek?: string;
-}
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { TicketDto } from 'src/app/core/models/ticket.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardTableService {
-  private _loading$ = new BehaviorSubject<boolean>(true);
-  private _search$ = new Subject<void>();
-  private _reportData$ = new BehaviorSubject<ReportData[]>([]);
-  private _total$ = new BehaviorSubject<number>(0);
-  private baseUrl = 'https://localhost:7179/api/Reports';
-  startDate: number | null = null;
-  endDate: number | null = null;
-
-  private _state: State = {
-    page: 1,
-    pageSize: 10,
-    searchTerm: '',
-    sortColumn: 'reportID',
-    sortDirection: 'desc',
-  };
+  private apiUrl = 'https://localhost:7179/api/Tickets';
+  private ticketDataSubject = new BehaviorSubject<TicketDto[]>([]);
+  ticketData$: Observable<TicketDto[]> = this.ticketDataSubject.asObservable();
+  public totalSubject = new BehaviorSubject<number>(0);
+  public total$ = this.totalSubject.asObservable();
+  public searchTerm: string = '';
+  public startDate: Date | null = null;
+  public endDate: Date | null = null;
+  public sortColumn: keyof TicketDto | null = null;
+  public sortDirection: 'asc' | 'desc' | null = null;
+  public page: number = 1;
+  public pageSize: number = 10;
+  public loading$ = new BehaviorSubject<boolean>(false);
+  private userId: number | null = null;
 
   constructor(private http: HttpClient) {
-    this._search$
-      .pipe(
-        tap(() => this._loading$.next(true)),
-        debounceTime(200),
-        switchMap(() => this._search()),
-        delay(200),
-        tap(() => this._loading$.next(false))
-      )
-      .subscribe((result) => {
-        this._reportData$.next(result.reportData);
-        this._total$.next(result.total);
-      });
-
-    this._search$.next();
+    // Removed fetchTickets() from constructor to prevent fetching all tickets initially
   }
 
-  get reportData$() {
-    return this._reportData$.asObservable();
+  // Set user ID and fetch tickets accordingly
+  setUserId(userId: number) {
+    this.userId = userId;
+    this.fetchTickets(); // Fetch tickets for the user
   }
 
-  get total$() {
-    return this._total$.asObservable();
+  private fetchTickets() {
+    this.loading$.next(true);
+    const url = this.userId
+      ? `${this.apiUrl}?userId=${this.userId}`
+      : this.apiUrl; // Use user ID in URL if available
+
+    this.http.get<TicketDto[]>(url).subscribe(
+      (tickets) => {
+        this.ticketDataSubject.next(tickets);
+        this.totalSubject.next(tickets.length);
+        this.loading$.next(false);
+      },
+      (error) => {
+        console.error('Error fetching tickets:', error);
+        this.loading$.next(false);
+      }
+    );
   }
 
-  get loading$() {
-    return this._loading$.asObservable();
+  public setDateRange(startDate: Date | null, endDate: Date | null) {
+    this.startDate = startDate;
+    this.endDate = endDate;
+    this.applyFilters();
   }
 
-  get page() {
-    return this._state.page;
+  public clearFilters() {
+    this.searchTerm = '';
+    this.startDate = null;
+    this.endDate = null;
+    this.applyFilters();
   }
 
-  get pageSize() {
-    return this._state.pageSize;
-  }
+  private applyFilters() {
+    this.ticketDataSubject.subscribe((tickets: TicketDto[]) => {
+      let filteredTickets = [...tickets];
 
-  get searchTerm() {
-    return this._state.searchTerm;
-  }
+      // Filter based on search term
+      if (this.searchTerm) {
+        filteredTickets = filteredTickets.filter(
+          (ticket) =>
+            ticket.title
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase()) ||
+            ticket.description
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase())
+        );
+      }
 
-  set selectedWorkWeek(workWeek: string | undefined) {
-    this._set({ selectedWorkWeek: workWeek });
-  }
+      // Filter based on date range
+      if (this.startDate && this.endDate) {
+        filteredTickets = filteredTickets.filter((ticket) => {
+          if (ticket.submissionDate) {
+            const submissionDate = new Date(ticket.submissionDate);
+            return (
+              this.startDate instanceof Date &&
+              !isNaN(this.startDate.getTime()) &&
+              this.endDate instanceof Date &&
+              !isNaN(this.endDate.getTime()) &&
+              submissionDate >= this.startDate &&
+              submissionDate <= this.endDate
+            );
+          }
+          return false; // Exclude tickets without a submissionDate
+        });
+      }
 
-  set page(page: number) {
-    this._set({ page });
-  }
+      // Sorting
+      if (this.sortColumn) {
+        filteredTickets.sort((a, b) => {
+          const aValue = a[this.sortColumn as keyof TicketDto]; // Type assertion
+          const bValue = b[this.sortColumn as keyof TicketDto]; // Type assertion
 
-  set pageSize(pageSize: number) {
-    this._set({ pageSize });
-  }
+          if (aValue === undefined && bValue === undefined) return 0; // Both are undefined
+          if (aValue === undefined) return 1; // Consider undefined to be greater
+          if (bValue === undefined) return -1; // Consider undefined to be lesser
 
-  set searchTerm(searchTerm: string) {
-    this._set({ searchTerm });
-  }
+          if (this.sortDirection === 'asc') {
+            return aValue > bValue ? 1 : -1;
+          } else {
+            return aValue < bValue ? 1 : -1;
+          }
+        });
+      }
 
-  set sortColumn(sortColumn: string) {
-    this._set({ sortColumn });
-  }
+      // Implement Pagination
+      const startIndex = (this.page - 1) * this.pageSize;
+      const paginatedTickets = filteredTickets.slice(
+        startIndex,
+        startIndex + this.pageSize
+      );
 
-  set sortDirection(sortDirection: SortDirection) {
-    this._set({ sortDirection });
-  }
-
-  filterByDateRange(startDate: Date, endDate: Date) {
-    // Update state with new start and end dates
-    this._set({ startDate, endDate });
-  }
-
-  setDateRange(startDate: Date, endDate: Date) {
-    console.log('Setting startDate in service:', startDate);
-    console.log('Setting endDate in service:', endDate);
-    this._set({ startDate, endDate });
-  }
-
-  clearFilters(): void {
-    this._set({
-      startDate: undefined,
-      endDate: undefined,
-      selectedWorkWeek: '',
-      searchTerm: '',
+      this.totalSubject.next(filteredTickets.length); // Update total count after filtering
+      this.ticketDataSubject.next(paginatedTickets);
     });
   }
 
-  private _set(patch: Partial<State>) {
-    Object.assign(this._state, patch);
-    this._search$.next();
+  public sort(column: keyof TicketDto, direction: 'asc' | 'desc') {
+    this.sortColumn = column;
+    this.sortDirection = direction;
+    this.applyFilters();
   }
 
-  private _search(): Observable<SearchResult> {
-    const {
-      sortColumn,
-      sortDirection,
-      pageSize,
-      page,
-      searchTerm,
-      startDate,
-      endDate,
-      selectedWorkWeek,
-    } = this._state;
-
-    let url = `${this.baseUrl}?page=${page}&pageSize=${pageSize}&searchTerm=${searchTerm}&sortColumn=${sortColumn}&sortDirection=${sortDirection}`;
-    url += `&startDate=${startDate ?? ''}&endDate=${endDate ?? ''}`;
-    if (selectedWorkWeek) {
-      url += `&workWeek=${selectedWorkWeek}`;
-    }
-
-    console.log('Request URL:', url);
-
-    return this.http.get<ReportData[]>(url).pipe(
-      catchError(() => of([])),
-      map((reportData: ReportData[]) => {
-        const filteredData = this._filter(reportData, searchTerm);
-        const sortedData = this._sort(filteredData, sortColumn, sortDirection);
-        const paginatedData = this._paginate(sortedData, page, pageSize);
-        const total = filteredData.length;
-        return { reportData: paginatedData, total };
+  public createTicket(ticket: TicketDto): Observable<TicketDto> {
+    return this.http.post<TicketDto>(this.apiUrl, ticket).pipe(
+      map((newTicket) => {
+        this.fetchTickets(); // Refresh the ticket list after creation
+        return newTicket;
       })
     );
   }
 
-  private _filter(reportData: ReportData[], searchTerm: string): ReportData[] {
-    if (!searchTerm.trim()) {
-      return reportData;
-    }
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    return reportData.filter(
-      (report) =>
-        report.reportID.toString().includes(lowerCaseSearchTerm) ||
-        `R${report.reportID.toString().padStart(5, '0')}`.includes(
-          lowerCaseSearchTerm
-        ) ||
-        report.submissionDateTime.toLowerCase().includes(lowerCaseSearchTerm) ||
-        report.workWeek.toString().includes(lowerCaseSearchTerm) ||
-        report.totalWorkHour.toString().includes(lowerCaseSearchTerm)
+  public updateTicket(ticket: TicketDto): Observable<TicketDto> {
+    return this.http
+      .put<TicketDto>(`${this.apiUrl}/${ticket.ticketID}`, ticket)
+      .pipe(
+        map((updatedTicket) => {
+          this.fetchTickets(); // Refresh the ticket list after update
+          return updatedTicket;
+        })
+      );
+  }
+
+  public deleteTicket(ticketID: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${ticketID}`).pipe(
+      map(() => {
+        this.fetchTickets(); // Refresh the ticket list after deletion
+      })
     );
-  }
-
-  private _sort(
-    reportData: ReportData[],
-    sortColumn: string,
-    sortDirection: SortDirection
-  ): ReportData[] {
-    if (!sortColumn || sortDirection === '') {
-      return reportData;
-    }
-
-    return reportData.sort((a, b) => {
-      let aValue = '';
-      let bValue = '';
-
-      switch (sortColumn) {
-        case 'reportID':
-          aValue = a.reportID.toString();
-          bValue = b.reportID.toString();
-          break;
-        case 'submissionDateTime':
-          aValue = a.submissionDateTime || '';
-          bValue = b.submissionDateTime || '';
-          break;
-        case 'workWeek':
-          aValue = String(a.workWeek);
-          bValue = String(b.workWeek);
-          break;
-        case 'workHour':
-          aValue = String(a.totalWorkHour);
-          bValue = String(b.totalWorkHour);
-          break;
-        default:
-          break;
-      }
-
-      const result = aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      return sortDirection === 'asc' ? result : -result;
-    });
-  }
-
-  private _paginate(
-    reportData: ReportData[],
-    page: number,
-    pageSize: number
-  ): ReportData[] {
-    const startIndex = (page - 1) * pageSize;
-    return reportData.slice(startIndex, startIndex + pageSize);
   }
 }

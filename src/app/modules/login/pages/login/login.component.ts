@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/core/APIservices/login.service';
+import { DashboardTableService } from 'src/app/modules/home/components/dashboard-table/dashboard-table.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,11 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private router: Router, private loginService: LoginService) {}
+  constructor(
+    private router: Router,
+    private loginService: LoginService,
+    private dashboardTableService: DashboardTableService // Inject DashboardTableService
+  ) {}
 
   goToRegister(): void {
     this.router.navigate(['/register']);
@@ -25,6 +30,10 @@ export class LoginComponent {
     this.loginService.login(this.email, this.password).subscribe({
       next: (response) => {
         // Handle successful login
+        const userId = localStorage.getItem('userID'); // Retrieve user ID from local storage
+        if (userId) {
+          this.dashboardTableService.setUserId(+userId); // Set user ID in DashboardTableService (convert to number)
+        }
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
