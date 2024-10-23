@@ -22,22 +22,25 @@ export class DashboardTableService {
   public pageSize: number = 10;
   public loading$ = new BehaviorSubject<boolean>(false);
   private userId: number | null = null;
+  private roleId: number | null = null;
 
   constructor(private http: HttpClient) {
     // Removed fetchTickets() from constructor to prevent fetching all tickets initially
   }
 
   // Set user ID and fetch tickets accordingly
-  setUserId(userId: number) {
+  setUserAndRole(userId: number, roleId: number) {
     this.userId = userId;
-    this.fetchTickets(); // Fetch tickets for the user
+    this.roleId = roleId;
+    this.fetchTickets();
   }
 
   private fetchTickets() {
     this.loading$.next(true);
-    const url = this.userId
-      ? `${this.apiUrl}?userId=${this.userId}`
-      : this.apiUrl; // Use user ID in URL if available
+    const url =
+      this.userId && this.roleId
+        ? `${this.apiUrl}?userId=${this.userId}&roleId=${this.roleId}`
+        : this.apiUrl;
 
     this.http.get<TicketDto[]>(url).subscribe(
       (tickets) => {

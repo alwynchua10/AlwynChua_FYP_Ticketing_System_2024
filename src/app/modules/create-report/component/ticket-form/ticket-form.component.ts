@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { TicketService } from 'src/app/core/APIservices/ticket.service';
 import { StatusService } from 'src/app/core/APIservices/status.service';
 import { PriorityService } from 'src/app/core/APIservices/priority.service';
@@ -28,8 +29,10 @@ export class TicketFormComponent implements OnInit {
   categories: Category[] = [];
   loggedInUser: UserDto | null = null; // To store logged-in user info
   loggedInUserName: string = ''; // To display the user's name
+  userRole: string = ''; // To store the user's role
 
   constructor(
+    private router: Router,
     private ticketService: TicketService,
     private statusService: StatusService,
     private priorityService: PriorityService,
@@ -53,14 +56,14 @@ export class TicketFormComponent implements OnInit {
 
     // Get the logged-in user's ID from localStorage
     const userId = this.userService.getUserIdFromToken();
+    this.userRole = localStorage.getItem('roleID') || ''; // Assuming roleID is stored in local storage
+
     if (userId) {
       this.ticket.userID = userId; // Set userID in the ticket object
       this.userService.getUserById(this.ticket.userID).subscribe({
         next: (user: UserDto) => {
           this.loggedInUser = user; // Store the logged-in user
           this.loggedInUserName = user.userName; // Get the username
-
-          // Debugging output
           console.log('Fetched User:', this.loggedInUser);
           console.log('Logged In User Name:', this.loggedInUserName);
         },
@@ -77,6 +80,7 @@ export class TicketFormComponent implements OnInit {
     this.ticketService.createTicket(this.ticket).subscribe({
       next: (response) => {
         console.log('Ticket created successfully', response);
+        this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         console.error('Error creating ticket', error);

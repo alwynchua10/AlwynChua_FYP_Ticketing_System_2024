@@ -31,9 +31,12 @@ export class LoginComponent {
       next: (response) => {
         // Handle successful login
         const userId = localStorage.getItem('userID'); // Retrieve user ID from local storage
-        if (userId) {
-          this.dashboardTableService.setUserId(+userId); // Set user ID in DashboardTableService (convert to number)
+        const roleId = localStorage.getItem('roleID'); // Retrieve role ID from local storage
+
+        if (userId && roleId) {
+          this.dashboardTableService.setUserAndRole(+userId, +roleId); // Set user ID and role ID in DashboardTableService
         }
+
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {

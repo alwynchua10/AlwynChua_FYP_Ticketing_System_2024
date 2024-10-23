@@ -26,7 +26,7 @@ export class HeaderContainerComponent implements OnInit {
     this.router.navigate(['/dashboard']);
   }
 
-  navigateToCreateReport(): void {
+  navigateToCreateTicket(): void {
     this.router.navigate(['/create-report']);
   }
 

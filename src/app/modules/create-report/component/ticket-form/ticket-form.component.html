@@ -1,4 +1,65 @@
 <form (ngSubmit)="onSubmit()" #ticketForm="ngForm">
+  <div class="form-group grid-container">
+    <!-- Uninteractable input for logged-in username -->
+    <div class="grid-item">
+      <label for="loggedInUserName">User</label>
+      <input
+        type="text"
+        id="loggedInUserName"
+        class="form-control"
+        [(ngModel)]="loggedInUserName"
+        name="loggedInUserName"
+        [disabled]="userRole !== '1' && userRole !== '2'"
+      />
+    </div>
+    
+
+    <div class="grid-item">
+      <label for="categoryID">Category</label>
+      <select
+        id="categoryID"
+        class="form-control"
+        [(ngModel)]="ticket.categoryID"
+        name="categoryID"
+        required
+      >
+        <option *ngFor="let category of categories" [value]="category.categoryID">
+          {{ category.categoryName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="grid-item">
+      <label for="statusID">Status</label>
+      <select
+        id="statusID"
+        class="form-control"
+        [(ngModel)]="ticket.statusID"
+        name="statusID"
+        required
+      >
+        <option *ngFor="let status of statuses" [value]="status.statusID">
+          {{ status.statusName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="grid-item">
+      <label for="priorityID">Priority</label>
+      <select
+        id="priorityID"
+        class="form-control"
+        [(ngModel)]="ticket.priorityID"
+        name="priorityID"
+        required
+      >
+        <option *ngFor="let priority of priorities" [value]="priority.priorityID">
+          {{ priority.priorityLevel }}
+        </option>
+      </select>
+    </div>
+  </div>
+
   <div class="form-group">
     <label for="title">Title</label>
     <input
@@ -21,57 +82,6 @@
       required
     ></textarea>
   </div>
-
-  <div class="form-group">
-    <label for="statusID">Status</label>
-    <select
-      id="statusID"
-      class="form-control"
-      [(ngModel)]="ticket.statusID"
-      name="statusID"
-      required
-    >
-      <option *ngFor="let status of statuses" [value]="status.statusID">
-        {{ status.statusName }}
-      </option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="priorityID">Priority</label>
-    <select
-      id="priorityID"
-      class="form-control"
-      [(ngModel)]="ticket.priorityID"
-      name="priorityID"
-      required
-    >
-      <option *ngFor="let priority of priorities" [value]="priority.priorityID">
-        {{ priority.priorityLevel }}
-      </option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="categoryID">Category</label>
-    <select
-      id="categoryID"
-      class="form-control"
-      [(ngModel)]="ticket.categoryID"
-      name="categoryID"
-      required
-    >
-      <option *ngFor="let category of categories" [value]="category.categoryID">
-        {{ category.categoryName }}
-      </option>
-    </select>
-  </div>
-
-  <div *ngIf="loggedInUserName">
-    <p>Welcome, {{ loggedInUserName }}!</p>
-  </div>
-  
-  
 
   <button type="submit" class="btn btn-primary">Create Ticket</button>
 </form>

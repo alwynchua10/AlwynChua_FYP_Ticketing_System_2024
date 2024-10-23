@@ -13,17 +13,19 @@
             <button (click)="navigateToCategories()">Categories</button>
             <button (click)="navigateToUserManagement()">User Management</button>
             <button (click)="navigateToReportStatistics()">Report Statistics</button>
+            <button (click)="navigateToCreateTicket()">Create Ticket</button>
         </div>
 
         <!-- User buttons -->
         <div *ngIf="userRole === 'user'">
             <button (click)="navigateToHome()">My Tickets</button>
-            <button (click)="navigateToCreateReport()">Create Ticket</button>
+            <button (click)="navigateToCreateTicket()">Create Ticket</button>
         </div>
 
         <!-- Agent buttons -->
         <div *ngIf="userRole === 'agent'">
             <button (click)="navigateToHome()">Assigned Tickets</button>
+            <button (click)="navigateToCreateTicket()">Create Ticket</button>
         </div>
     </div>
 

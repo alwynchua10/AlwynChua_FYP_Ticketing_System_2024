@@ -25,10 +25,12 @@ export class DashboardTableComponent {
 
   ngOnInit(): void {
     const userId = localStorage.getItem('userID');
-    if (userId) {
-      this.service.setUserId(+userId); // Set user ID in DashboardTableService
+    const roleId = localStorage.getItem('roleID'); // Retrieve roleId
+
+    if (userId && roleId) {
+      this.service.setUserAndRole(+userId, +roleId); // Set user ID and role ID in DashboardTableService
     } else {
-      console.error('No user ID found in local storage');
+      console.error('No user ID or role ID found in local storage');
     }
   }
 
