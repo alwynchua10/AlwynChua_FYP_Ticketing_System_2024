@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { DashboardModule } from './modules/home/dashboard.module';
 import { CreateReportModule } from './modules/create-report/create-report.module';
-import { EditReportModule } from './modules/edit-report/edit-report.module';
 import { ReportStatisticsModule } from './modules/report-statistics/report-statistics.module';
 import { UserManagementModule } from './modules/user-management/user-management.module';
 import { ManageCategoriesModule } from './modules/manage-categories/manage-categories.module';
@@ -18,6 +17,7 @@ import { RegisterModule } from './modules/register/register.module';
 import { LoginModule } from './modules/login/login.module';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { EditTicketModule } from './modules/edit-ticket/edit-ticket.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,7 +28,7 @@ import { HttpClientModule } from '@angular/common/http';
     CoreModule,
     DashboardModule,
     CreateReportModule,
-    EditReportModule,
+    EditTicketModule,
     ReportStatisticsModule,
     UserManagementModule,
     ManageCategoriesModule,

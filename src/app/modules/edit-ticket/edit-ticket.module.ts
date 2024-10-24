@@ -9,4 +9,4 @@ import { FormEditComponent } from './components/form-edit/form-edit.component';
   declarations: [EditTicketComponent, FormEditComponent],
   imports: [CommonModule, CoreModule, SharedModule],
 })
-export class EditReportModule {}
+export class EditTicketModule {}
