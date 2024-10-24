@@ -1,17 +1,18 @@
 <form (ngSubmit)="onSubmit()" #ticketForm="ngForm">
   <div class="form-group grid-container">
     <div class="grid-item">
-      <label for="loggedInUserName">Submitted By</label>
+      <label for="loggedInUserName">User</label>
       <input
         type="text"
         id="loggedInUserName"
         class="form-control"
-        [(ngModel)]="userSearchTerm"
+        [(ngModel)]="loggedInUserName"
         name="loggedInUserName"
         (input)="onUserSearch()"
         [disabled]="userRole !== '1' && userRole !== '2'"
+        placeholder="Search and select a user"
       />
-      <div *ngIf="userSuggestions.length > 0" class="suggestions-dropdown">
+      <div *ngIf="userSuggestions.length > 0 && (userRole === '1' || userRole === '2')" class="suggestions-dropdown">
         <ul>
           <li *ngFor="let user of userSuggestions" (click)="selectUser(user)">
             {{ user.userName }} ({{ user.userEmail }})
@@ -19,8 +20,7 @@
         </ul>
       </div>
     </div>
-    
-    <!-- Category Selection -->
+
     <div class="grid-item">
       <label for="categoryID">Category</label>
       <select
@@ -30,13 +30,13 @@
         name="categoryID"
         required
       >
+        <option value="" disabled [ngStyle]="{'display': ticket.categoryID ? 'none' : 'block'}">Select a Category</option>
         <option *ngFor="let category of categories" [value]="category.categoryID">
           {{ category.categoryName }}
         </option>
       </select>
     </div>
 
-    <!-- Status Selection -->
     <div class="grid-item">
       <label for="statusID">Status</label>
       <select
@@ -46,13 +46,13 @@
         name="statusID"
         required
       >
+        <option value="" disabled [ngStyle]="{'display': ticket.statusID ? 'none' : 'block'}">Select a Status</option>
         <option *ngFor="let status of statuses" [value]="status.statusID">
           {{ status.statusName }}
         </option>
       </select>
     </div>
 
-    <!-- Priority Selection -->
     <div class="grid-item">
       <label for="priorityID">Priority</label>
       <select
@@ -62,6 +62,7 @@
         name="priorityID"
         required
       >
+        <option value="" disabled [ngStyle]="{'display': ticket.priorityID ? 'none' : 'block'}">Select a Priority</option>
         <option *ngFor="let priority of priorities" [value]="priority.priorityID">
           {{ priority.priorityLevel }}
         </option>
@@ -69,7 +70,6 @@
     </div>
   </div>
 
-  <!-- Title Input -->
   <div class="form-group">
     <label for="title">Title</label>
     <input
@@ -79,10 +79,10 @@
       [(ngModel)]="ticket.title"
       name="title"
       required
+      placeholder="Enter a title"
     />
   </div>
 
-  <!-- Description Input -->
   <div class="form-group">
     <label for="description">Description</label>
     <textarea
@@ -90,10 +90,9 @@
       class="form-control"
       [(ngModel)]="ticket.description"
       name="description"
-      required
+      required placeholder="Enter description"
     ></textarea>
   </div>
 
-  <!-- Submit Button -->
   <button type="submit" class="btn btn-primary">Create Ticket</button>
 </form>

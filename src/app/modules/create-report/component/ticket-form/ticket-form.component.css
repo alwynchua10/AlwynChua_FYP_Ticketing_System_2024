@@ -82,7 +82,9 @@ button:hover {
   max-height: 150px; /* Limit the height of the dropdown */
   overflow-y: auto; /* Enable scrolling */
   position: absolute; /* Position it over other elements */
-  width: 100%;
+  width: auto; /* Adjust the width */
+  max-width: 100%; /* Ensure the dropdown doesn't stretch too far */
+  z-index: 1000; /* Make sure it stays on top */
 }
 
 .suggestions-dropdown li {

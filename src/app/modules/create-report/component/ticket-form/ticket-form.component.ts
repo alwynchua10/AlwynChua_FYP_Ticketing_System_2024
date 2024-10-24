@@ -21,7 +21,7 @@ export class TicketFormComponent implements OnInit {
     description: '',
     statusID: 0,
     priorityID: 0,
-    userID: 0, // This will be set to the logged-in user's ID or selected user's ID
+    userID: 0, // Set to the logged-in user's ID or selected user's ID
     categoryID: 0,
   };
   statuses: Status[] = [];
@@ -46,28 +46,42 @@ export class TicketFormComponent implements OnInit {
     // Fetch statuses, priorities, and categories
     this.statusService.getStatuses().subscribe((data: Status[]) => {
       this.statuses = data;
+      // Set the default statusID to the first fetched status if available
+      if (this.statuses.length > 0) {
+        this.ticket.statusID = this.statuses[0].statusID; // Set to the first status
+      }
     });
 
     this.priorityService.getPriorities().subscribe((data: Priority[]) => {
       this.priorities = data;
+      // Set the default priorityID to the first fetched priority if available
+      if (this.priorities.length > 0) {
+        this.ticket.priorityID = this.priorities[0].priorityID; // Set to the first priority
+      }
     });
 
     this.categoryService.getCategories().subscribe((data: Category[]) => {
       this.categories = data;
+      // Set the default categoryID to the first fetched category if available
+      if (this.categories.length > 0) {
+        this.ticket.categoryID = this.categories[0].categoryID; // Set to the first category
+      }
     });
 
-    // Get the logged-in user's ID from localStorage
+    // Get the logged-in user's ID and role from localStorage
     const userId = this.userService.getUserIdFromToken();
-    this.userRole = localStorage.getItem('roleID') || ''; // Assuming roleID is stored in local storage
+    this.userRole = localStorage.getItem('roleID') || ''; // Get the role ID from localStorage
 
     if (userId) {
       this.ticket.userID = userId; // Set userID in the ticket object
       this.userService.getUserById(this.ticket.userID).subscribe({
         next: (user: UserDto) => {
           this.loggedInUser = user; // Store the logged-in user
-          this.loggedInUserName = user.userName; // Get the username
-          console.log('Fetched User:', this.loggedInUser);
-          console.log('Logged In User Name:', this.loggedInUserName);
+          if (this.userRole === '1' || this.userRole === '2') {
+            this.loggedInUserName = ''; // Admin/agent's input starts empty
+          } else {
+            this.loggedInUserName = user.userName; // Regular user's name is pre-filled
+          }
         },
         error: (error) => {
           console.error('Error fetching user:', error); // Handle errors here
@@ -78,10 +92,13 @@ export class TicketFormComponent implements OnInit {
     }
   }
 
+  // Handle user search only for admins/agents (RoleID 1 or 2)
   onUserSearch() {
-    if (this.userSearchTerm.length > 0) {
-      // Minimum 3 characters to search
-      this.userService.searchUsers(this.userSearchTerm).subscribe({
+    if (
+      (this.userRole === '1' || this.userRole === '2') &&
+      this.loggedInUserName.length > 0
+    ) {
+      this.userService.searchUsers(this.loggedInUserName).subscribe({
         next: (users: UserDto[]) => {
           this.userSuggestions = users; // Store the suggestions
         },
@@ -90,13 +107,14 @@ export class TicketFormComponent implements OnInit {
         },
       });
     } else {
-      this.userSuggestions = []; // Clear suggestions if input is less than 3 characters
+      this.userSuggestions = []; // Clear suggestions if input is empty or user is not an admin/agent
     }
   }
 
+  // Select user from suggestions (admin/agent only)
   selectUser(user: UserDto) {
-    this.userSearchTerm = user.userName; // Set the input field value to the selected user's name
-    this.ticket.userID = user.userID ?? 0; // Set userID to 0 if it's undefined
+    this.loggedInUserName = user.userName; // Set the input field to the selected user's name
+    this.ticket.userID = user.userID ?? 0; // Set the selected user's ID
     this.userSuggestions = []; // Clear suggestions after selection
   }
 
