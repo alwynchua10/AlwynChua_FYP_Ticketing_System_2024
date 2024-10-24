@@ -1,8 +1,7 @@
 <form (ngSubmit)="onSubmit()" #ticketForm="ngForm">
   <div class="form-group grid-container">
-    <!-- Uninteractable input for logged-in username -->
     <div class="grid-item">
-      <label for="loggedInUserName">User</label>
+      <label for="loggedInUserName">Submitted By</label>
       <input
         type="text"
         id="loggedInUserName"
@@ -12,7 +11,6 @@
         (input)="onUserSearch()"
         [disabled]="userRole !== '1' && userRole !== '2'"
       />
-      <!-- Suggestions for searching users -->
       <div *ngIf="userSuggestions.length > 0" class="suggestions-dropdown">
         <ul>
           <li *ngFor="let user of userSuggestions" (click)="selectUser(user)">

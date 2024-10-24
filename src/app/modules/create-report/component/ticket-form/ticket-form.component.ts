@@ -95,7 +95,7 @@ export class TicketFormComponent implements OnInit {
   }
 
   selectUser(user: UserDto) {
-    this.loggedInUserName = user.userName; // Display the selected user's name
+    this.userSearchTerm = user.userName; // Set the input field value to the selected user's name
     this.ticket.userID = user.userID ?? 0; // Set userID to 0 if it's undefined
     this.userSuggestions = []; // Clear suggestions after selection
   }
