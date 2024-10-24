@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-edit-report',
-  templateUrl: './edit-report.component.html',
-  styleUrls: ['./edit-report.component.css'],
+  selector: 'app-edit-ticket',
+  templateUrl: './edit-ticket.component.html',
+  styleUrls: ['./edit-ticket.component.css'],
 })
-export class EditReportComponent implements OnInit {
+export class EditTicketComponent implements OnInit {
   reportID!: number;
 
   constructor(private route: ActivatedRoute) {}

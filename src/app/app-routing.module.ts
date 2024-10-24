@@ -4,7 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './modules/home/pages/dashboard/dashboard.component';
 import { LoginComponent } from './modules/login/pages/login/login.component';
 import { CreateReportComponent } from './modules/create-report/pages/create-report/create-report.component';
-import { EditReportComponent } from './modules/edit-report/pages/edit-report/edit-report.component';
+import { EditTicketComponent } from './modules/edit-ticket/pages/edit-report/edit-ticket.component';
 import { UserManagementComponent } from './modules/user-management/pages/user-management/user-management.component';
 import { ManageCategoriesComponent } from './modules/manage-categories/pages/manage-categories/manage-categories.component';
 import { ReportStatisticsComponent } from './modules/report-statistics/pages/report-statistics/report-statistics.component';
@@ -31,8 +31,8 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'edit-report/:reportID',
-    component: EditReportComponent,
+    path: 'edit-ticket/:reportID',
+    component: EditTicketComponent,
     canActivate: [AuthGuard],
   },
   {
