@@ -1,1 +1,44 @@
-<p>form-edit works!</p>
+<div class="edit-ticket-container">
+    <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input id="title" type="text" [(ngModel)]="editTicketForm.title" name="title" class="form-control" required />
+        </div>
+  
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" [(ngModel)]="editTicketForm.description" name="description" class="form-control" required></textarea>
+        </div>
+  
+        <div class="form-group">
+            <label for="statusID">Status</label>
+            <select id="statusID" [(ngModel)]="editTicketForm.statusID" name="statusID" class="form-control" required>
+                <option value="" disabled>Select a Status</option>
+                <option *ngFor="let status of statuses" [value]="status.statusID">{{ status.statusName }}</option>
+            </select>
+        </div>
+  
+        <div class="form-group">
+            <label for="priorityID">Priority</label>
+            <select id="priorityID" [(ngModel)]="editTicketForm.priorityID" name="priorityID" class="form-control" required>
+                <option value="" disabled>Select a Priority</option>
+                <option *ngFor="let priority of priorities" [value]="priority.priorityID">{{ priority.priorityLevel }}</option>
+            </select>
+        </div>
+  
+        <div class="form-group">
+            <label for="categoryID">Category</label>
+            <select id="categoryID" [(ngModel)]="editTicketForm.categoryID" name="categoryID" class="form-control" required>
+                <option value="" disabled>Select a Category</option>
+                <option *ngFor="let category of categories" [value]="category.categoryID">{{ category.categoryName }}</option>
+            </select>
+        </div>
+  
+        <div class="form-group">
+            <label for="userID">User</label>
+            <input id="userID" type="text" [(ngModel)]="editTicketForm.userID" name="userID" class="form-control" readonly />
+        </div>
+  
+        <button type="submit" class="btn btn-primary">Update Ticket</button>
+    </form>
+</div>

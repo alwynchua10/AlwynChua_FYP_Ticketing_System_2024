@@ -31,7 +31,7 @@ const routes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'edit-ticket/:reportID',
+    path: 'edit-ticket/:id',
     component: EditTicketComponent,
     canActivate: [AuthGuard],
   },

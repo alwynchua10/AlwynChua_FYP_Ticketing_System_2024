@@ -148,9 +148,12 @@ export class DashboardTableService {
     );
   }
 
-  public updateTicket(ticket: TicketDto): Observable<TicketDto> {
+  public updateTicket(
+    ticketID: number,
+    ticketData: TicketDto
+  ): Observable<TicketDto> {
     return this.http
-      .put<TicketDto>(`${this.apiUrl}/${ticket.ticketID}`, ticket)
+      .put<TicketDto>(`${this.apiUrl}/${ticketID}`, ticketData)
       .pipe(
         map((updatedTicket) => {
           this.fetchTickets(); // Refresh the ticket list after update
@@ -165,5 +168,9 @@ export class DashboardTableService {
         this.fetchTickets(); // Refresh the ticket list after deletion
       })
     );
+  }
+
+  getTicketById(ticketID: number): Observable<TicketDto> {
+    return this.http.get<TicketDto>(`${this.apiUrl}/${ticketID}`);
   }
 }

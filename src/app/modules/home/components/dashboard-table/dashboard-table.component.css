@@ -97,3 +97,13 @@
   cursor: pointer;
   border-radius: 5px;
 }
+
+.clickable-link {
+  color: #007bff;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.clickable-link:hover {
+  text-decoration: underline;
+}

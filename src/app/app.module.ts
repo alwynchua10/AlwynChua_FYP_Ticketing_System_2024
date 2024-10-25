@@ -15,7 +15,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RegisterModule } from './modules/register/register.module';
 import { LoginModule } from './modules/login/login.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { EditTicketModule } from './modules/edit-ticket/edit-ticket.module';
 
@@ -38,6 +38,7 @@ import { EditTicketModule } from './modules/edit-ticket/edit-ticket.module';
     NgbModule,
     FormsModule,
     HttpClientModule,
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

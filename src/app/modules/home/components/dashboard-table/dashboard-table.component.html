@@ -28,12 +28,16 @@
             <th class="col-md-2" sortable="statusID" (sort)="onSort($event)">STATUS</th>
             <th class="col-md-2" sortable="priorityName" (sort)="onSort($event)">PRIORITY</th>
             <th class="col-md-2" sortable="categoryName" (sort)="onSort($event)">CATEGORY</th>
-            <th class="col-md-1">ACTIONS</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let ticket of ticketData">
-            <td style="font-weight: bold;" scope="row">{{ ticket.ticketID }}</td>
+            <!-- Make the ticketID clickable -->
+            <td style="font-weight: bold;" scope="row">
+              <a *ngIf="ticket.ticketID !== undefined" (click)="editTicket(ticket.ticketID)" class="clickable-link">
+                {{ ticket.ticketID }}
+              </a>              
+            </td>
             <td>{{ ticket.title }}</td>
             <td>{{ ticket.userName }}</td>
             <td>{{ ticket.description }}</td>
@@ -41,19 +45,9 @@
             <td>{{ ticket.statusName }}</td>
             <td>{{ ticket.priorityName }}</td>
             <td>{{ ticket.categoryName }}</td>
-            <td>
-              <button 
-              class="editDelete" 
-              mat-icon-button 
-              color="primary" 
-              aria-label="Edit" 
-              (click)="ticket.ticketID !== undefined ? editTicket(ticket.ticketID) : null">
-              <mat-icon>edit</mat-icon>
-            </button>
-            
-            </td>
           </tr>
         </tbody>
+        
       </table>
 
       <div class="empty-message" *ngIf="ticketData.length === 0">
