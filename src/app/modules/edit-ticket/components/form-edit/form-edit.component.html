@@ -1,106 +1,129 @@
 <div class="edit-ticket-container">
-    <form (ngSubmit)="onSubmit()">
-      <div class="form-group grid-container">
-        <!-- User Field: Top Left -->
-        <div class="grid-item">
-            <label for="userName">User</label>
-            <input
-              id="userName"
-              type="text"
-              [(ngModel)]="editTicketForm.userName"
-              name="userName"
-              class="form-control"
-              readonly
-            />
-          </div>
-          
-        <!-- Category Field: Top Right -->
-        <div class="grid-item">
-          <label for="categoryID">Category</label>
-          <select
-            id="categoryID"
-            [(ngModel)]="editTicketForm.categoryID"
-            name="categoryID"
-            class="form-control"
-            required
-          >
-            <option value="" disabled [ngStyle]="{ 'display': editTicketForm.categoryID ? 'none' : 'block' }">
-              Select a Category
-            </option>
-            <option *ngFor="let category of categories" [value]="category.categoryID">
-              {{ category.categoryName }}
-            </option>
-          </select>
-        </div>
-  
-        <!-- Status Field: Bottom Left -->
-        <div class="grid-item">
-          <label for="statusID">Status</label>
-          <select
-            id="statusID"
-            [(ngModel)]="editTicketForm.statusID"
-            name="statusID"
-            class="form-control"
-            required
-          >
-            <option value="" disabled [ngStyle]="{ 'display': editTicketForm.statusID ? 'none' : 'block' }">
-              Select a Status
-            </option>
-            <option *ngFor="let status of statuses" [value]="status.statusID">
-              {{ status.statusName }}
-            </option>
-          </select>
-        </div>
-  
-        <!-- Priority Field: Bottom Right -->
-        <div class="grid-item">
-          <label for="priorityID">Priority</label>
-          <select
-            id="priorityID"
-            [(ngModel)]="editTicketForm.priorityID"
-            name="priorityID"
-            class="form-control"
-            required
-          >
-            <option value="" disabled [ngStyle]="{ 'display': editTicketForm.priorityID ? 'none' : 'block' }">
-              Select a Priority
-            </option>
-            <option *ngFor="let priority of priorities" [value]="priority.priorityID">
-              {{ priority.priorityLevel }}
-            </option>
-          </select>
-        </div>
-      </div>
-  
-      <!-- Title Field: Below Grid -->
-      <div class="form-group">
-        <label for="title">Title</label>
+  <form (ngSubmit)="onSubmit()">
+    <div class="form-group grid-container">
+      <!-- User Field: Top Left -->
+      <div class="grid-item">
+        <label for="userName">User</label>
         <input
-          id="title"
+          id="userName"
           type="text"
-          [(ngModel)]="editTicketForm.title"
-          name="title"
+          [(ngModel)]="editTicketForm.userName"
+          name="userName"
           class="form-control"
-          required
+          readonly
         />
       </div>
-  
-      <!-- Description Field: Below Grid -->
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          [(ngModel)]="editTicketForm.description"
-          name="description"
+
+      <!-- Category Field: Top Right -->
+      <div class="grid-item">
+        <label for="categoryID">Category</label>
+        <select
+          id="categoryID"
+          [(ngModel)]="editTicketForm.categoryID"
+          name="categoryID"
           class="form-control"
+          required
+        >
+          <option value="" disabled [ngStyle]="{ 'display': editTicketForm.categoryID ? 'none' : 'block' }">
+            Select a Category
+          </option>
+          <option *ngFor="let category of categories" [value]="category.categoryID">
+            {{ category.categoryName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Status Field: Bottom Left -->
+      <div class="grid-item">
+        <label for="statusID">Status</label>
+        <select
+          id="statusID"
+          [(ngModel)]="editTicketForm.statusID"
+          name="statusID"
+          class="form-control"
+          required
+        >
+          <option value="" disabled [ngStyle]="{ 'display': editTicketForm.statusID ? 'none' : 'block' }">
+            Select a Status
+          </option>
+          <option *ngFor="let status of statuses" [value]="status.statusID">
+            {{ status.statusName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Priority Field: Bottom Right -->
+      <div class="grid-item">
+        <label for="priorityID">Priority</label>
+        <select
+          id="priorityID"
+          [(ngModel)]="editTicketForm.priorityID"
+          name="priorityID"
+          class="form-control"
+          required
+        >
+          <option value="" disabled [ngStyle]="{ 'display': editTicketForm.priorityID ? 'none' : 'block' }">
+            Select a Priority
+          </option>
+          <option *ngFor="let priority of priorities" [value]="priority.priorityID">
+            {{ priority.priorityLevel }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Title Field: Below Grid -->
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input
+        id="title"
+        type="text"
+        [(ngModel)]="editTicketForm.title"
+        name="title"
+        class="form-control"
+        required
+      />
+    </div>
+
+    <!-- Description Field: Below Grid -->
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea
+        id="description"
+        [(ngModel)]="editTicketForm.description"
+        name="description"
+        class="form-control"
+        required
+      ></textarea>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary">Update Ticket</button>
+  </form>
+
+  <!-- Comments Section -->
+  <div class="comments-section">
+    <h3>Comments</h3>
+    <form (ngSubmit)="submitComment()">
+      <div class="form-group">
+        <textarea
+          [(ngModel)]="newComment.text"
+          name="commentText"
+          class="form-control"
+          placeholder="Add a comment..."
           required
         ></textarea>
       </div>
-  
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary">Update Ticket</button>
+      <div class="form-group">
+        <input type="file" (change)="onImageChange($event)" />
+      </div>
+      <button type="submit" class="btn btn-secondary">Submit Comment</button>
     </form>
-  </div>
 
-  
-  
+    <div *ngFor="let comment of comments" class="comment">
+      <p><strong>{{ comment.userName }}:</strong> {{ comment.text }}</p>
+      <img *ngIf="comment.commentImage" [src]="comment.commentImage" alt="Comment Image" />
+      <hr />
+    </div>
+  </div>
+</div>

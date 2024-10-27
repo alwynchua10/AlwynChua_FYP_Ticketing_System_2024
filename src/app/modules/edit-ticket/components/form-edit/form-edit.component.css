@@ -95,3 +95,53 @@ button:hover {
 .suggestions-dropdown li:hover {
   background-color: #f0f0f0; /* Background on hover */
 }
+
+.comments-section {
+  border: 1px solid #ccc; /* Border around the comments section */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the section */
+  margin-top: 20px; /* Space above the comments section */
+  background-color: #f9f9f9; /* Light background color */
+}
+
+.comments-section h3 {
+  font-size: 1.5em; /* Increase font size for the header */
+  margin-bottom: 15px; /* Space below the header */
+  color: #333; /* Darker text color */
+}
+
+.comments-section .form-group {
+  margin-bottom: 15px; /* Space between form groups */
+}
+
+.comments-section textarea {
+  resize: none; /* Disable resizing */
+  height: 80px; /* Fixed height for the comment input */
+}
+
+.comments-section .comment {
+  background-color: #fff; /* White background for individual comments */
+  border: 1px solid #ddd; /* Light border for individual comments */
+  border-radius: 4px; /* Rounded corners for comments */
+  padding: 10px; /* Padding inside the comment */
+  margin-bottom: 10px; /* Space between comments */
+}
+
+.comments-section .comment img {
+  max-width: 100%; /* Make images responsive */
+  height: auto; /* Maintain aspect ratio */
+  margin-top: 5px; /* Space above the image */
+}
+
+.comments-section button {
+  background-color: #007bff; /* Primary button color */
+  color: #fff; /* Button text color */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Rounded corners for buttons */
+  padding: 10px 15px; /* Padding inside the button */
+  cursor: pointer; /* Pointer cursor on hover */
+}
+
+.comments-section button:hover {
+  background-color: #0056b3; /* Darker color on hover */
+}

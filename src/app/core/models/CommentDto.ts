@@ -5,5 +5,5 @@ export interface CommentDto {
   userID?: number; // Optional to capture user ID if needed
   createdOn?: Date; // Optional for display purposes
   userName?: string; // Optional if you want to show the user's name
-  commentImage?: string; // To store the image path or URL
+  commentImage?: string | Blob; // To store the image path or URL
 }

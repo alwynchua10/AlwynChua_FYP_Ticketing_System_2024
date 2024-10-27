@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CommentDto } from '../models/CommentDto';
 
@@ -19,21 +20,21 @@ export class CommentService {
     const formData = new FormData();
     formData.append('text', comment.text);
 
-    // Check if ticketID is defined before converting to string
     if (comment.ticketID !== undefined) {
       formData.append('ticketID', comment.ticketID.toString());
     } else {
-      console.error('ticketID is undefined'); // Log an error if ticketID is not provided
+      console.error('ticketID is undefined');
     }
 
-    // Check if commentImage is provided
     if (comment.commentImage) {
-      formData.append('commentImage', comment.commentImage); // Ensure this is the correct type (Blob or File)
+      formData.append('commentImage', comment.commentImage);
     }
 
-    // Log the formData contents for debugging
-    console.log('Submitting comment:', formData);
+    // Retrieve token from local storage and set the Authorization header
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`, // Update 'token' if needed
+    });
 
-    return this.http.post<CommentDto>(this.baseUrl, formData);
+    return this.http.post<CommentDto>(this.baseUrl, formData, { headers });
   }
 }

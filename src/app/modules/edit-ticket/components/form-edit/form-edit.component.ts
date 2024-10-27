@@ -1,16 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder } from '@angular/forms';
 import { DashboardTableService } from 'src/app/modules/home/components/dashboard-table/dashboard-table.service';
 import { TicketDto } from 'src/app/core/models/ticket.dto';
 import { StatusService } from 'src/app/core/APIservices/status.service';
 import { PriorityService } from 'src/app/core/APIservices/priority.service';
 import { CategoryService } from 'src/app/core/APIservices/categories.service';
-import { UserService } from 'src/app/core/APIservices/user.service';
+import { CommentService } from 'src/app/core/APIservices/comment.service'; // Import CommentService
 import { Status } from 'src/app/core/models/status';
 import { Priority } from 'src/app/core/models/priority';
 import { Category } from 'src/app/core/models/category';
-import { UserDto } from 'src/app/core/models/user.dto';
+import { CommentDto } from 'src/app/core/models/CommentDto';
 
 @Component({
   selector: 'app-form-edit',
@@ -25,12 +24,18 @@ export class FormEditComponent implements OnInit {
     priorityID: 0,
     userID: 0,
     categoryID: 0,
-    userName: '', // Add userName to hold the user's name
+    userName: '',
   };
+  newComment: CommentDto = {
+    text: '',
+    ticketID: 0, // Will set this when submitting
+    commentImage: '',
+  };
+  comments: CommentDto[] = []; // To store comments
   statuses: Status[] = [];
   priorities: Priority[] = [];
   categories: Category[] = [];
-  ticketID!: number; // Ticket ID from route
+  ticketID!: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,28 +44,14 @@ export class FormEditComponent implements OnInit {
     private statusService: StatusService,
     private priorityService: PriorityService,
     private categoryService: CategoryService,
-    private userService: UserService
+    private commentService: CommentService // Inject CommentService
   ) {}
 
   ngOnInit(): void {
-    // Get the ticket ID from the route
     this.ticketID = +(this.route.snapshot.paramMap.get('id') || 0);
-
-    // Fetch statuses, priorities, and categories
     this.fetchDropdownData();
-
-    // Fetch the existing ticket data
-    this.dashboardService.getTicketById(this.ticketID).subscribe(
-      (data: TicketDto) => {
-        this.editTicketForm = {
-          ...data,
-          userName: data.userName || '', // Assign the user's name from the response
-        };
-      },
-      (error) => {
-        console.error('Error fetching ticket', error);
-      }
-    );
+    this.fetchTicketData();
+    this.fetchComments(); // Fetch comments on init
   }
 
   fetchDropdownData() {
@@ -77,8 +68,33 @@ export class FormEditComponent implements OnInit {
     });
   }
 
+  fetchTicketData() {
+    this.dashboardService.getTicketById(this.ticketID).subscribe(
+      (data: TicketDto) => {
+        this.editTicketForm = {
+          ...data,
+          userName: data.userName || '',
+        };
+      },
+      (error) => {
+        console.error('Error fetching ticket', error);
+      }
+    );
+  }
+
+  fetchComments() {
+    this.commentService.getComments(this.ticketID).subscribe(
+      (data: CommentDto[]) => {
+        this.comments = data;
+      },
+      (error) => {
+        console.error('Error fetching comments', error);
+      }
+    );
+  }
+
   onSubmit(): void {
-    const { submissionDate, ...ticketData } = this.editTicketForm; // Exclude submissionDate
+    const { submissionDate, ...ticketData } = this.editTicketForm;
     this.dashboardService.updateTicket(this.ticketID, ticketData).subscribe(
       () => {
         this.router.navigate(['/dashboard']);
@@ -87,5 +103,30 @@ export class FormEditComponent implements OnInit {
         console.error('Error updating ticket', error);
       }
     );
+  }
+
+  submitComment(): void {
+    this.newComment.ticketID = this.ticketID; // Set ticket ID for the comment
+    this.commentService.postComment(this.newComment).subscribe(
+      () => {
+        this.fetchComments(); // Refresh comments after submitting
+        this.newComment.text = ''; // Clear the comment input
+        this.newComment.commentImage = ''; // Clear the image input
+      },
+      (error) => {
+        console.error('Error submitting comment', error);
+      }
+    );
+  }
+
+  onImageChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.newComment.commentImage = e.target?.result as string; // Store the image path/URL
+      };
+      reader.readAsDataURL(file);
+    }
   }
 }
