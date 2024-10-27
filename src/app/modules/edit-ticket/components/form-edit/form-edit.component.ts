@@ -25,6 +25,7 @@ export class FormEditComponent implements OnInit {
     priorityID: 0,
     userID: 0,
     categoryID: 0,
+    userName: '', // Add userName to hold the user's name
   };
   statuses: Status[] = [];
   priorities: Priority[] = [];
@@ -51,7 +52,10 @@ export class FormEditComponent implements OnInit {
     // Fetch the existing ticket data
     this.dashboardService.getTicketById(this.ticketID).subscribe(
       (data: TicketDto) => {
-        this.editTicketForm = data; // Directly assign fetched ticket data
+        this.editTicketForm = {
+          ...data,
+          userName: data.userName || '', // Assign the user's name from the response
+        };
       },
       (error) => {
         console.error('Error fetching ticket', error);
@@ -74,15 +78,14 @@ export class FormEditComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.dashboardService
-      .updateTicket(this.ticketID, this.editTicketForm)
-      .subscribe(
-        () => {
-          this.router.navigate(['/dashboard']);
-        },
-        (error) => {
-          console.error('Error updating ticket', error);
-        }
-      );
+    const { submissionDate, ...ticketData } = this.editTicketForm; // Exclude submissionDate
+    this.dashboardService.updateTicket(this.ticketID, ticketData).subscribe(
+      () => {
+        this.router.navigate(['/dashboard']);
+      },
+      (error) => {
+        console.error('Error updating ticket', error);
+      }
+    );
   }
 }
