@@ -69,18 +69,4 @@
     </ng-container>
   </div>
 
-  <div class="d-flex justify-content-between">
-    <ngb-pagination 
-        [collectionSize]="(total$ | async) ?? 0" 
-        [(page)]="service.page" 
-        [pageSize]="service.pageSize"
-        [maxSize]="3">
-    </ngb-pagination>
-
-    <select class="custom-select" style="width: auto" name="pageSize" [(ngModel)]="service.pageSize">
-      <option [ngValue]="10">10 items per page</option>
-      <option [ngValue]="20">20 items per page</option>
-      <option [ngValue]="50">50 items per page</option>
-    </select>
-  </div>
 </form>

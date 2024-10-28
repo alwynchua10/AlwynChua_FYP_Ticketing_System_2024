@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 })
 export class DashboardTableComponent {
   ticketData$!: Observable<TicketDto[]>;
-  total$: Observable<number>;
   currentSortColumn: string = '';
   currentSortDirection: string = '';
 
@@ -22,7 +21,6 @@ export class DashboardTableComponent {
 
   constructor(public service: DashboardTableService, private router: Router) {
     this.ticketData$ = service.ticketData$;
-    this.total$ = service.total$;
   }
 
   ngOnInit(): void {

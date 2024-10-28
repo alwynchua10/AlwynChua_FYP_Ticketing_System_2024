@@ -11,15 +11,11 @@ export class DashboardTableService {
   private apiUrl = 'https://localhost:7179/api/Tickets';
   private ticketDataSubject = new BehaviorSubject<TicketDto[]>([]);
   ticketData$: Observable<TicketDto[]> = this.ticketDataSubject.asObservable();
-  public totalSubject = new BehaviorSubject<number>(0);
-  public total$ = this.totalSubject.asObservable();
   public searchTerm: string = '';
   public startDate: Date | null = null;
   public endDate: Date | null = null;
   public sortColumn: keyof TicketDto | null = null;
   public sortDirection: 'asc' | 'desc' | null = null;
-  public page: number = 1;
-  public pageSize: number = 10;
   public loading$ = new BehaviorSubject<boolean>(false);
   private userId: number | null = null;
   private roleId: number | null = null;
@@ -52,7 +48,6 @@ export class DashboardTableService {
           return bDate - aDate; // Newest first
         });
         this.ticketDataSubject.next(tickets);
-        this.totalSubject.next(tickets.length);
         this.loading$.next(false);
       },
       (error) => {
@@ -76,70 +71,56 @@ export class DashboardTableService {
   }
 
   private applyFilters() {
-    combineLatest([this.ticketData$, this.loading$])
-      .pipe(
-        map(([tickets]) => {
-          let filteredTickets = [...tickets];
+    this.ticketData$.subscribe((tickets) => {
+      let filteredTickets = [...tickets];
 
-          // Filter based on search term
-          if (this.searchTerm) {
-            filteredTickets = filteredTickets.filter(
-              (ticket) =>
-                ticket.title
-                  .toLowerCase()
-                  .includes(this.searchTerm.toLowerCase()) ||
-                ticket.description
-                  .toLowerCase()
-                  .includes(this.searchTerm.toLowerCase())
+      // Filter based on search term
+      if (this.searchTerm) {
+        filteredTickets = filteredTickets.filter(
+          (ticket) =>
+            ticket.title
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase()) ||
+            ticket.description
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase())
+        );
+      }
+
+      // Filter based on date range
+      if (this.startDate && this.endDate) {
+        filteredTickets = filteredTickets.filter((ticket) => {
+          if (ticket.submissionDate) {
+            const submissionDate = new Date(ticket.submissionDate);
+            return (
+              this.startDate instanceof Date &&
+              !isNaN(this.startDate.getTime()) &&
+              this.endDate instanceof Date &&
+              !isNaN(this.endDate.getTime()) &&
+              submissionDate >= this.startDate &&
+              submissionDate <= this.endDate
             );
           }
+          return false; // Exclude tickets without a submissionDate
+        });
+      }
 
-          // Filter based on date range
-          if (this.startDate && this.endDate) {
-            filteredTickets = filteredTickets.filter((ticket) => {
-              if (ticket.submissionDate) {
-                const submissionDate = new Date(ticket.submissionDate);
-                return (
-                  this.startDate instanceof Date &&
-                  !isNaN(this.startDate.getTime()) &&
-                  this.endDate instanceof Date &&
-                  !isNaN(this.endDate.getTime()) &&
-                  submissionDate >= this.startDate &&
-                  submissionDate <= this.endDate
-                );
-              }
-              return false; // Exclude tickets without a submissionDate
-            });
+      // Sorting
+      if (this.sortColumn) {
+        filteredTickets.sort((a, b) => {
+          const aValue = a[this.sortColumn as keyof TicketDto];
+          const bValue = b[this.sortColumn as keyof TicketDto];
+
+          if (this.sortDirection === 'asc') {
+            return this.compareValues(aValue, bValue);
+          } else {
+            return this.compareValues(bValue, aValue);
           }
+        });
+      }
 
-          // Sorting
-          if (this.sortColumn) {
-            filteredTickets.sort((a, b) => {
-              const aValue = a[this.sortColumn as keyof TicketDto];
-              const bValue = b[this.sortColumn as keyof TicketDto];
-
-              if (this.sortDirection === 'asc') {
-                return this.compareValues(aValue, bValue);
-              } else {
-                return this.compareValues(bValue, aValue);
-              }
-            });
-          }
-
-          // Implement Pagination
-          const startIndex = (this.page - 1) * this.pageSize;
-          const paginatedTickets = filteredTickets.slice(
-            startIndex,
-            startIndex + this.pageSize
-          );
-
-          this.totalSubject.next(filteredTickets.length); // Update total count after filtering
-          return paginatedTickets;
-        })
-      )
-      .subscribe((paginatedTickets) => {
-        this.ticketDataSubject.next(paginatedTickets);
-      });
+      this.ticketDataSubject.next(filteredTickets);
+    });
   }
 
   private compareValues(a: any, b: any): number {
