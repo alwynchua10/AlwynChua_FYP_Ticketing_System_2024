@@ -13,12 +13,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DatePickerComponent } from './components/date-picker/date-picker.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { TruncatePipe } from 'src/app/shared/components/truncate.pipe';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     DashboardTableComponent,
     DatePickerComponent,
+    TruncatePipe,
   ],
   imports: [
     CommonModule,

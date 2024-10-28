@@ -15,6 +15,8 @@ import { Router } from '@angular/router';
 export class DashboardTableComponent {
   ticketData$!: Observable<TicketDto[]>;
   total$: Observable<number>;
+  currentSortColumn: string = '';
+  currentSortDirection: string = '';
 
   @ViewChildren(NgbdSortableHeader) headers!: QueryList<NgbdSortableHeader>;
 
@@ -25,10 +27,10 @@ export class DashboardTableComponent {
 
   ngOnInit(): void {
     const userId = localStorage.getItem('userID');
-    const roleId = localStorage.getItem('roleID'); // Retrieve roleId
+    const roleId = localStorage.getItem('roleID');
 
     if (userId && roleId) {
-      this.service.setUserAndRole(+userId, +roleId); // Set user ID and role ID in DashboardTableService
+      this.service.setUserAndRole(+userId, +roleId);
     } else {
       console.error('No user ID or role ID found in local storage');
     }
@@ -42,7 +44,7 @@ export class DashboardTableComponent {
 
   clearFilters(): void {
     this.service.clearFilters();
-    window.location.reload(); // Consider removing this to keep the view smoother
+    window.location.reload(); // Consider a smoother transition instead of reloading
   }
 
   hasFiltersApplied(): boolean {
@@ -59,13 +61,26 @@ export class DashboardTableComponent {
       }
     });
 
-    // Ensure direction is a valid value
+    // Store the current sorting state
+    this.currentSortColumn = column;
+    this.currentSortDirection = direction;
+
     if (direction === 'asc' || direction === 'desc') {
       this.service.sort(column as keyof TicketDto, direction);
     }
   }
 
+  isSorted(column: string): boolean {
+    return this.currentSortColumn === column;
+  }
+
+  getSortIcon(column: string): string {
+    if (this.currentSortColumn !== column) return '';
+
+    return this.currentSortDirection === 'asc' ? '↑' : '↓'; // Up and down arrows
+  }
+
   editTicket(ticketID: number) {
-    this.router.navigate(['/edit-ticket', ticketID]); // Update route as needed
+    this.router.navigate(['/edit-ticket', ticketID]);
   }
 }

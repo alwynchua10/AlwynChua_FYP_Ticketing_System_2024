@@ -1,5 +1,4 @@
 <form>
-
   <div class="filter-container">
     <div class="filter-dropdown">
       <app-date-picker (dateRangeSelected)="setDateRange($event.startDate, $event.endDate)"></app-date-picker>
@@ -20,34 +19,48 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th class="col-md-1" sortable="ticketID" (sort)="onSort($event)">TICKET NO</th>
-            <th class="col-md-2" sortable="title" (sort)="onSort($event)">TITLE</th>
-            <th class="col-md-2" sortable="userName" (sort)="onSort($event)">SUBMITTED BY</th>
-            <th class="col-md-2" sortable="description" (sort)="onSort($event)">DESCRIPTION</th>
-            <th class="col-md-2" sortable="submissionDate" (sort)="onSort($event)">SUBMISSION DATE</th>
-            <th class="col-md-2" sortable="statusID" (sort)="onSort($event)">STATUS</th>
-            <th class="col-md-2" sortable="priorityName" (sort)="onSort($event)">PRIORITY</th>
-            <th class="col-md-2" sortable="categoryName" (sort)="onSort($event)">CATEGORY</th>
+            <th class="col-md-1" sortable="ticketID" (sort)="onSort($event)">
+              TICKET NO <span *ngIf="isSorted('ticketID')">{{ getSortIcon('ticketID') }}</span>
+            </th>
+            <th class="col-md-2" sortable="title" (sort)="onSort($event)">
+              TITLE <span *ngIf="isSorted('title')">{{ getSortIcon('title') }}</span>
+            </th>
+            <th class="col-md-2" sortable="userName" (sort)="onSort($event)">
+              SUBMITTED BY <span *ngIf="isSorted('userName')">{{ getSortIcon('userName') }}</span>
+            </th>
+            <th class="col-md-2" sortable="description" (sort)="onSort($event)">
+              DESCRIPTION <span *ngIf="isSorted('description')">{{ getSortIcon('description') }}</span>
+            </th>
+            <th class="col-md-2" sortable="submissionDate" (sort)="onSort($event)">
+              SUBMISSION DATE <span *ngIf="isSorted('submissionDate')">{{ getSortIcon('submissionDate') }}</span>
+            </th>
+            <th class="col-md-1" sortable="statusID" (sort)="onSort($event)">
+              STATUS <span *ngIf="isSorted('statusID')">{{ getSortIcon('statusID') }}</span>
+            </th>
+            <th class="col-md-1" sortable="priorityName" (sort)="onSort($event)">
+              PRIORITY <span *ngIf="isSorted('priorityName')">{{ getSortIcon('priorityName') }}</span>
+            </th>
+            <th class="col-md-2" sortable="categoryName" (sort)="onSort($event)">
+              CATEGORY <span *ngIf="isSorted('categoryName')">{{ getSortIcon('categoryName') }}</span>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let ticket of ticketData">
-            <!-- Make the ticketID clickable -->
             <td style="font-weight: bold;" scope="row">
               <a *ngIf="ticket.ticketID !== undefined" (click)="editTicket(ticket.ticketID)" class="clickable-link">
-                {{ ticket.ticketID }}
-              </a>              
+                {{ 'TICK' + ticket.ticketID }}
+              </a>
             </td>
-            <td>{{ ticket.title }}</td>
+            <td>{{ ticket.title | truncate: 5 }}</td> <!-- Adjust the number as needed -->
             <td>{{ ticket.userName }}</td>
-            <td>{{ ticket.description }}</td>
+            <td>{{ ticket.description | truncate: 5 }}</td> <!-- Adjust the number as needed -->
             <td>{{ ticket.submissionDate | date }}</td>
             <td>{{ ticket.statusName }}</td>
             <td>{{ ticket.priorityName }}</td>
             <td>{{ ticket.categoryName }}</td>
           </tr>
         </tbody>
-        
       </table>
 
       <div class="empty-message" *ngIf="ticketData.length === 0">
@@ -70,5 +83,4 @@
       <option [ngValue]="50">50 items per page</option>
     </select>
   </div>
-
 </form>
