@@ -1,6 +1,19 @@
 <div class="edit-ticket-container">
   <form (ngSubmit)="onSubmit()">
     <div class="form-group grid-container">
+      <!-- Ticket ID Display: Above User Field -->
+      <div class="grid-item">
+        <label for="ticketID">Ticket ID</label>
+        <input
+          id="ticketID"
+          type="text"
+          [(ngModel)]="formattedTicketID"
+          name="ticketID"
+          class="form-control"
+          readonly
+        />
+      </div>
+
       <!-- User Field: Top Left -->
       <div class="grid-item">
         <label for="userName">User</label>
@@ -120,10 +133,27 @@
       <button type="submit" class="btn btn-secondary">Submit Comment</button>
     </form>
 
-    <div *ngFor="let comment of comments" class="comment">
-      <p><strong>{{ comment.userName }}:</strong> {{ comment.text }}</p>
-      <img *ngIf="comment.commentImage" [src]="comment.commentImage" alt="Comment Image" />
+    <div *ngFor="let comment of comments.slice().reverse()" class="comment">
+      <p>
+        <strong>{{ comment.userName }}:</strong> {{ comment.text }}
+        <span class="comment-timestamp" *ngIf="comment.createdOn">
+          {{ comment.createdOn | date:'short' }} <!-- No brackets -->
+        </span>
+      </p>
+      <img
+        *ngIf="comment.commentImage"
+        [src]="'data:image/png;base64,' + comment.commentImage"
+        alt="Comment Image"
+        class="comment-image"
+        (click)="openImagePreview(comment.commentImage)"
+      />
       <hr />
+    </div>
+
+  <!-- Image Preview Modal -->
+  <div class="modal-overlay" *ngIf="isImagePreviewVisible" (click)="closeImagePreview()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <img [src]="selectedImage" alt="Previewed Comment Image" />
     </div>
   </div>
 </div>

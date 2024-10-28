@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TicketDto } from 'src/app/core/models/ticket.dto';
 
@@ -24,11 +24,8 @@ export class DashboardTableService {
   private userId: number | null = null;
   private roleId: number | null = null;
 
-  constructor(private http: HttpClient) {
-    // Removed fetchTickets() from constructor to prevent fetching all tickets initially
-  }
+  constructor(private http: HttpClient) {}
 
-  // Set user ID and fetch tickets accordingly
   setUserAndRole(userId: number, roleId: number) {
     this.userId = userId;
     this.roleId = roleId;
@@ -44,6 +41,16 @@ export class DashboardTableService {
 
     this.http.get<TicketDto[]>(url).subscribe(
       (tickets) => {
+        // Sort tickets by SubmissionDate in descending order
+        tickets.sort((a, b) => {
+          const aDate = a.submissionDate
+            ? new Date(a.submissionDate).getTime()
+            : 0;
+          const bDate = b.submissionDate
+            ? new Date(b.submissionDate).getTime()
+            : 0;
+          return bDate - aDate; // Newest first
+        });
         this.ticketDataSubject.next(tickets);
         this.totalSubject.next(tickets.length);
         this.loading$.next(false);
@@ -69,68 +76,82 @@ export class DashboardTableService {
   }
 
   private applyFilters() {
-    this.ticketDataSubject.subscribe((tickets: TicketDto[]) => {
-      let filteredTickets = [...tickets];
+    combineLatest([this.ticketData$, this.loading$])
+      .pipe(
+        map(([tickets]) => {
+          let filteredTickets = [...tickets];
 
-      // Filter based on search term
-      if (this.searchTerm) {
-        filteredTickets = filteredTickets.filter(
-          (ticket) =>
-            ticket.title
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase()) ||
-            ticket.description
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase())
-        );
-      }
-
-      // Filter based on date range
-      if (this.startDate && this.endDate) {
-        filteredTickets = filteredTickets.filter((ticket) => {
-          if (ticket.submissionDate) {
-            const submissionDate = new Date(ticket.submissionDate);
-            return (
-              this.startDate instanceof Date &&
-              !isNaN(this.startDate.getTime()) &&
-              this.endDate instanceof Date &&
-              !isNaN(this.endDate.getTime()) &&
-              submissionDate >= this.startDate &&
-              submissionDate <= this.endDate
+          // Filter based on search term
+          if (this.searchTerm) {
+            filteredTickets = filteredTickets.filter(
+              (ticket) =>
+                ticket.title
+                  .toLowerCase()
+                  .includes(this.searchTerm.toLowerCase()) ||
+                ticket.description
+                  .toLowerCase()
+                  .includes(this.searchTerm.toLowerCase())
             );
           }
-          return false; // Exclude tickets without a submissionDate
-        });
-      }
 
-      // Sorting
-      if (this.sortColumn) {
-        filteredTickets.sort((a, b) => {
-          const aValue = a[this.sortColumn as keyof TicketDto]; // Type assertion
-          const bValue = b[this.sortColumn as keyof TicketDto]; // Type assertion
-
-          if (aValue === undefined && bValue === undefined) return 0; // Both are undefined
-          if (aValue === undefined) return 1; // Consider undefined to be greater
-          if (bValue === undefined) return -1; // Consider undefined to be lesser
-
-          if (this.sortDirection === 'asc') {
-            return aValue > bValue ? 1 : -1;
-          } else {
-            return aValue < bValue ? 1 : -1;
+          // Filter based on date range
+          if (this.startDate && this.endDate) {
+            filteredTickets = filteredTickets.filter((ticket) => {
+              if (ticket.submissionDate) {
+                const submissionDate = new Date(ticket.submissionDate);
+                return (
+                  this.startDate instanceof Date &&
+                  !isNaN(this.startDate.getTime()) &&
+                  this.endDate instanceof Date &&
+                  !isNaN(this.endDate.getTime()) &&
+                  submissionDate >= this.startDate &&
+                  submissionDate <= this.endDate
+                );
+              }
+              return false; // Exclude tickets without a submissionDate
+            });
           }
-        });
-      }
 
-      // Implement Pagination
-      const startIndex = (this.page - 1) * this.pageSize;
-      const paginatedTickets = filteredTickets.slice(
-        startIndex,
-        startIndex + this.pageSize
-      );
+          // Sorting
+          if (this.sortColumn) {
+            filteredTickets.sort((a, b) => {
+              const aValue = a[this.sortColumn as keyof TicketDto];
+              const bValue = b[this.sortColumn as keyof TicketDto];
 
-      this.totalSubject.next(filteredTickets.length); // Update total count after filtering
-      this.ticketDataSubject.next(paginatedTickets);
-    });
+              if (this.sortDirection === 'asc') {
+                return this.compareValues(aValue, bValue);
+              } else {
+                return this.compareValues(bValue, aValue);
+              }
+            });
+          }
+
+          // Implement Pagination
+          const startIndex = (this.page - 1) * this.pageSize;
+          const paginatedTickets = filteredTickets.slice(
+            startIndex,
+            startIndex + this.pageSize
+          );
+
+          this.totalSubject.next(filteredTickets.length); // Update total count after filtering
+          return paginatedTickets;
+        })
+      )
+      .subscribe((paginatedTickets) => {
+        this.ticketDataSubject.next(paginatedTickets);
+      });
+  }
+
+  private compareValues(a: any, b: any): number {
+    if (a === undefined && b === undefined) return 0;
+    if (a === undefined) return 1;
+    if (b === undefined) return -1;
+
+    if (typeof a === 'string' && typeof b === 'string') {
+      return a.localeCompare(b);
+    } else {
+      return a > b ? 1 : -1;
+    }
   }
 
   public sort(column: keyof TicketDto, direction: 'asc' | 'desc') {

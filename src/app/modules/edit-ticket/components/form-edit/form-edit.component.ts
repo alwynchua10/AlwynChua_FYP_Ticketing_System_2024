@@ -37,6 +37,10 @@ export class FormEditComponent implements OnInit {
   categories: Category[] = [];
   ticketID!: number;
 
+  // Variables for image preview
+  isImagePreviewVisible = false;
+  selectedImage: string | null = null;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -52,6 +56,15 @@ export class FormEditComponent implements OnInit {
     this.fetchDropdownData();
     this.fetchTicketData();
     this.fetchComments(); // Fetch comments on init
+  }
+
+  get formattedTicketID(): string {
+    return `TICK${this.ticketID}`;
+  }
+
+  set formattedTicketID(value: string) {
+    const numericValue = parseInt(value.replace('TICK', ''), 10);
+    this.ticketID = isNaN(numericValue) ? 0 : numericValue;
   }
 
   fetchDropdownData() {
@@ -119,6 +132,19 @@ export class FormEditComponent implements OnInit {
     );
   }
 
+  async openImagePreview(imageData: string | Blob): Promise<void> {
+    if (typeof imageData === 'string') {
+      this.selectedImage = 'data:image/png;base64,' + imageData; // If it's already a string
+    } else {
+      const reader = new FileReader();
+      reader.readAsDataURL(imageData); // Convert Blob to Data URL
+      reader.onloadend = () => {
+        this.selectedImage = reader.result as string; // Set the selected image
+      };
+    }
+    this.isImagePreviewVisible = true; // Show the modal
+  }
+
   onImageChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
@@ -128,5 +154,11 @@ export class FormEditComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  // Function to close the image preview
+  closeImagePreview(): void {
+    this.isImagePreviewVisible = false; // Hide the modal
+    this.selectedImage = null; // Reset selected image
   }
 }

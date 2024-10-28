@@ -145,3 +145,50 @@ button:hover {
 .comments-section button:hover {
   background-color: #0056b3; /* Darker color on hover */
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure modal is on top */
+}
+
+.modal-content {
+  max-width: 80%; /* Limit the modal width */
+  max-height: 80%; /* Limit the modal height */
+  overflow: auto; /* Enable scrolling if content exceeds max height */
+  background: white; /* Background color of modal */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding around content */
+}
+
+.modal-content img {
+  max-width: 80%; /* Responsive width */
+  max-height: 80%; /* Responsive height */
+  display: block; /* Remove inline spacing */
+  margin: 0 auto; /* Center the image */
+}
+
+/* Cursor pointer for comment images */
+.comment-image {
+  cursor: pointer;
+  max-width: 300px;
+  max-height: 300px;
+  transition: transform 0.3s;
+}
+
+.comment-image:hover {
+  transform: scale(1.05);
+}
+
+.comment-timestamp {
+  opacity: 0.7; /* Adjust opacity as needed */
+  font-size: 0.9em; /* Optional: make it slightly smaller */
+  color: #555; /* Optional: change the color for better visibility */
+}
