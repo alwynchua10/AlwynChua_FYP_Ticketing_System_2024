@@ -3,8 +3,8 @@
     <div class="filter-dropdown">
       <app-date-picker (dateRangeSelected)="setDateRange($event.startDate, $event.endDate)"></app-date-picker>
     </div>
-    <div class="clear-filters" *ngIf="!hasFiltersApplied()">
-      <button (click)="clearFilters()">Clear Filter</button>
+    <div class="clear-filters" *ngIf="hasFiltersApplied()">
+      <button type="button" (click)="clearFilters()">Clear Filters</button>
     </div>
     <div class="span-box">
       <span class="ml-3" *ngIf="service.loading$ | async">Loading...</span>
@@ -52,9 +52,9 @@
                 {{ 'TICK' + ticket.ticketID }}
               </a>
             </td>
-            <td>{{ ticket.title | truncate: 5 }}</td> <!-- Adjust the number as needed -->
+            <td>{{ ticket.title | truncate: 5 }}</td>
             <td>{{ ticket.userName }}</td>
-            <td>{{ ticket.description | truncate: 5 }}</td> <!-- Adjust the number as needed -->
+            <td>{{ ticket.description | truncate: 5 }}</td>
             <td>{{ ticket.submissionDate | date }}</td>
             <td>{{ ticket.statusName }}</td>
             <td>{{ ticket.priorityName }}</td>
@@ -66,7 +66,13 @@
       <div class="empty-message" *ngIf="ticketData.length === 0">
         <p>No tickets found.</p>
       </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+      </div>
     </ng-container>
   </div>
-
 </form>

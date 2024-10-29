@@ -133,11 +133,11 @@
       <button type="submit" class="btn btn-secondary">Submit Comment</button>
     </form>
 
-    <div *ngFor="let comment of comments.slice().reverse()" class="comment">
+    <div *ngFor="let comment of comments" class="comment">
       <p>
         <strong>{{ comment.userName }}:</strong> {{ comment.text }}
         <span class="comment-timestamp" *ngIf="comment.createdOn">
-          {{ comment.createdOn | date:'short' }} <!-- No brackets -->
+          {{ comment.createdOn | date:'short' }}
         </span>
       </p>
       <img
@@ -149,6 +149,7 @@
       />
       <hr />
     </div>
+    
 
   <!-- Image Preview Modal -->
   <div class="modal-overlay" *ngIf="isImagePreviewVisible" (click)="closeImagePreview()">

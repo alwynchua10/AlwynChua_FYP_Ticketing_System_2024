@@ -17,6 +17,11 @@ export class DashboardTableComponent {
   currentSortColumn: string = '';
   currentSortDirection: string = '';
 
+  // Pagination properties
+  currentPage: number = 1; // Current page number
+  itemsPerPage: number = 10; // Tickets per page
+  totalTickets: number = 0; // Total number of tickets
+
   @ViewChildren(NgbdSortableHeader) headers!: QueryList<NgbdSortableHeader>;
 
   constructor(public service: DashboardTableService, private router: Router) {
@@ -32,17 +37,28 @@ export class DashboardTableComponent {
     } else {
       console.error('No user ID or role ID found in local storage');
     }
+
+    // Update total ticket count and initialize the page when tickets load
+    this.service.ticketData$.subscribe((tickets) => {
+      this.totalTickets = tickets.length; // Update total tickets
+    });
+
+    // Subscribe to total tickets to enable pagination logic
+    this.service.totalTickets$.subscribe((total) => {
+      this.totalTickets = total; // Update totalTickets for pagination logic
+    });
   }
 
   setDateRange(startDate: Date | null, endDate: Date | null) {
     console.log('Received startDate:', startDate);
     console.log('Received endDate:', endDate);
     this.service.setDateRange(startDate, endDate);
+    this.updateTickets(); // Update tickets after setting date range
   }
 
   clearFilters(): void {
     this.service.clearFilters();
-    window.location.reload(); // Consider a smoother transition instead of reloading
+    this.updateTickets(); // Update tickets after clearing filters
   }
 
   hasFiltersApplied(): boolean {
@@ -75,6 +91,7 @@ export class DashboardTableComponent {
     // Sort only if the direction is 'asc' or 'desc'
     if (direction === 'asc' || direction === 'desc') {
       this.service.sort(column as keyof TicketDto, direction);
+      this.updateTickets(); // Update tickets after sorting
     }
   }
 
@@ -90,5 +107,20 @@ export class DashboardTableComponent {
 
   editTicket(ticketID: number) {
     this.router.navigate(['/edit-ticket', ticketID]);
+  }
+
+  // Pagination methods
+  updateTickets() {
+    this.service.changePage(this.currentPage, this.itemsPerPage); // Update tickets based on current page
+  }
+
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages) return; // Guard for invalid pages
+    this.currentPage = page; // Update current page
+    this.service.changePage(this.currentPage, this.itemsPerPage); // Update tickets based on new page
+  }
+
+  get totalPages() {
+    return Math.ceil(this.totalTickets / this.itemsPerPage); // Calculate total pages
   }
 }

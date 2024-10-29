@@ -98,7 +98,12 @@ export class FormEditComponent implements OnInit {
   fetchComments() {
     this.commentService.getComments(this.ticketID).subscribe(
       (data: CommentDto[]) => {
-        this.comments = data;
+        // Sort comments by createdOn in descending order (newest first)
+        this.comments = data.sort((a, b) => {
+          return (
+            new Date(b.createdOn!).getTime() - new Date(a.createdOn!).getTime()
+          );
+        });
       },
       (error) => {
         console.error('Error fetching comments', error);

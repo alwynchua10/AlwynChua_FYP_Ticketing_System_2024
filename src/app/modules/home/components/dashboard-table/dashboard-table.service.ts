@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TicketDto } from 'src/app/core/models/ticket.dto';
 
@@ -19,6 +19,13 @@ export class DashboardTableService {
   public loading$ = new BehaviorSubject<boolean>(false);
   private userId: number | null = null;
   private roleId: number | null = null;
+  private fullTicketData: TicketDto[] = []; // Holds all fetched tickets
+  private totalTicketsSubject = new BehaviorSubject<number>(0);
+  totalTickets$ = this.totalTicketsSubject.asObservable();
+
+  // Pagination properties
+  public currentPage: number = 1; // Current page
+  public itemsPerPage: number = 10; // Number of items per page
 
   constructor(private http: HttpClient) {}
 
@@ -37,17 +44,8 @@ export class DashboardTableService {
 
     this.http.get<TicketDto[]>(url).subscribe(
       (tickets) => {
-        // Sort tickets by SubmissionDate in descending order
-        tickets.sort((a, b) => {
-          const aDate = a.submissionDate
-            ? new Date(a.submissionDate).getTime()
-            : 0;
-          const bDate = b.submissionDate
-            ? new Date(b.submissionDate).getTime()
-            : 0;
-          return bDate - aDate; // Newest first
-        });
-        this.ticketDataSubject.next(tickets);
+        this.fullTicketData = tickets; // Store all tickets
+        this.applyFilters(); // Apply filters immediately after fetching
         this.loading$.next(false);
       },
       (error) => {
@@ -67,21 +65,22 @@ export class DashboardTableService {
     this.searchTerm = '';
     this.startDate = null;
     this.endDate = null;
+    this.currentPage = 1; // Reset to the first page
     this.applyFilters();
   }
 
   private applyFilters() {
-    const currentTickets = this.ticketDataSubject.getValue(); // Get the current tickets directly
-    let filteredTickets = [...currentTickets]; // Work with a copy of the tickets
+    let filteredTickets = [...this.fullTicketData]; // Start with the full dataset
 
     // Filter based on search term
     if (this.searchTerm) {
       filteredTickets = filteredTickets.filter(
         (ticket) =>
           ticket.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          ticket.description
-            .toLowerCase()
-            .includes(this.searchTerm.toLowerCase())
+          (ticket.description &&
+            ticket.description
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase()))
       );
     }
 
@@ -99,7 +98,7 @@ export class DashboardTableService {
             submissionDate <= this.endDate
           );
         }
-        return false; // Exclude tickets without a submissionDate
+        return false;
       });
     }
 
@@ -117,8 +116,19 @@ export class DashboardTableService {
       });
     }
 
-    // Emit the filtered and sorted tickets
-    this.ticketDataSubject.next(filteredTickets);
+    // Update totalTickets count based on filtered results
+    const totalTickets = filteredTickets.length;
+
+    // Pagination: only after filtering and sorting
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
+
+    // Emit the paginated and sorted subset
+    this.ticketDataSubject.next(paginatedTickets);
+
+    // Emit total tickets count
+    this.totalTicketsSubject.next(totalTickets); // You need to define a BehaviorSubject for total tickets
   }
 
   private compareValues(a: any, b: any): number {
@@ -172,5 +182,11 @@ export class DashboardTableService {
 
   getTicketById(ticketID: number): Observable<TicketDto> {
     return this.http.get<TicketDto>(`${this.apiUrl}/${ticketID}`);
+  }
+
+  changePage(page: number, itemsPerPage: number) {
+    this.currentPage = page;
+    this.itemsPerPage = itemsPerPage;
+    this.applyFilters(); // Reapply filters to get new tickets based on page
   }
 }
