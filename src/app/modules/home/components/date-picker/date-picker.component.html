@@ -1,8 +1,10 @@
- <div class="date-box">
+<div class="date-box">
     <label for="start-date">Start Date:</label>
     <input type="date" id="start-date" [(ngModel)]="startDate" (input)="selectDateRange()">
     
     <label for="end-date">End Date:</label>
     <input type="date" id="end-date" [(ngModel)]="endDate" (input)="selectDateRange()">
+
+    <!-- Optional: Button to clear the date range -->
+    <button type="button" (click)="clearDateRange()">Clear Dates</button>
 </div>
-  

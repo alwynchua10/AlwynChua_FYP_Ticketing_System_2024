@@ -10,18 +10,26 @@ export class DatePickerComponent {
   endDate: Date | undefined;
 
   @Output() dateRangeSelected = new EventEmitter<{
-    startDate: Date;
-    endDate: Date;
+    startDate: Date | null;
+    endDate: Date | null;
   }>();
 
   constructor() {}
 
   selectDateRange() {
     if (this.startDate && this.endDate) {
+      // Emit as Date objects
       this.dateRangeSelected.emit({
-        startDate: this.startDate,
-        endDate: this.endDate,
+        startDate: new Date(this.startDate),
+        endDate: new Date(this.endDate),
       });
     }
+  }
+
+  // Optional: Method to clear the date range
+  clearDateRange() {
+    this.startDate = undefined;
+    this.endDate = undefined;
+    this.dateRangeSelected.emit({ startDate: null, endDate: null });
   }
 }

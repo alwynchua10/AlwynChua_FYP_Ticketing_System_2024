@@ -52,7 +52,7 @@ export class DashboardTableComponent {
   setDateRange(startDate: Date | null, endDate: Date | null) {
     console.log('Received startDate:', startDate);
     console.log('Received endDate:', endDate);
-    this.service.setDateRange(startDate, endDate);
+    this.service.setDateRange(startDate, endDate); // No conversion needed
     this.updateTickets(); // Update tickets after setting date range
   }
 
