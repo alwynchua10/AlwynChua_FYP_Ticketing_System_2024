@@ -111,6 +111,7 @@ export class DashboardTableComponent {
 
   // Pagination methods
   updateTickets() {
+    this.service.applyFilters(); // Apply filters immediately
     this.service.changePage(this.currentPage, this.itemsPerPage); // Update tickets based on current page
   }
 

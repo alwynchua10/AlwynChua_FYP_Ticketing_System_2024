@@ -69,18 +69,19 @@ export class DashboardTableService {
     this.applyFilters();
   }
 
-  private applyFilters() {
+  public applyFilters() {
     let filteredTickets = [...this.fullTicketData]; // Start with the full dataset
 
     // Filter based on search term
     if (this.searchTerm) {
+      const searchLower = this.searchTerm.toLowerCase();
       filteredTickets = filteredTickets.filter(
         (ticket) =>
-          ticket.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          ticket.title.toLowerCase().includes(searchLower) ||
           (ticket.description &&
-            ticket.description
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase()))
+            ticket.description.toLowerCase().includes(searchLower)) ||
+          (ticket.userName &&
+            ticket.userName.toLowerCase().includes(searchLower)) // Include filtering for submitted by
       );
     }
 

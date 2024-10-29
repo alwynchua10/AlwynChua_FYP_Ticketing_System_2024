@@ -10,8 +10,16 @@
       <span class="ml-3" *ngIf="service.loading$ | async">Loading...</span>
     </div>
     <div class="search-bar">
-      <input class="form-control ml-2" type="text" name="searchTerm" placeholder="Enter your search term" [(ngModel)]="service.searchTerm"/>
+      <input 
+        class="form-control ml-2" 
+        type="text" 
+        name="searchTerm" 
+        placeholder="Enter your search term" 
+        [(ngModel)]="service.searchTerm" 
+        (ngModelChange)="updateTickets()"
+      />
     </div>
+    
   </div>
 
   <div class="content">
@@ -67,12 +75,13 @@
         <p>No tickets found.</p>
       </div>
 
-      <!-- Pagination Controls -->
-      <div class="pagination">
-        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-        <span>Page {{ currentPage }} of {{ totalPages }}</span>
-        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
-      </div>
+<!-- Pagination Controls -->
+<div class="pagination">
+  <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" aria-label="Previous Page">Previous</button>
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages" aria-label="Next Page">Next</button>
+</div>
+
     </ng-container>
   </div>
 </form>
