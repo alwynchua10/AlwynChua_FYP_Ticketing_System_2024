@@ -53,16 +53,26 @@ export class DashboardTableComponent {
   }
 
   onSort({ column, direction }: SortEvent) {
+    // If the current column and direction are the same, don't proceed
+    if (
+      this.currentSortColumn === column &&
+      this.currentSortDirection === direction
+    ) {
+      return; // Prevent unnecessary sorting
+    }
+
+    // Reset other headers' directions
     this.headers.forEach((header) => {
       if (header.sortable !== column) {
         header.direction = '';
       }
     });
 
-    // Store the current sorting state
+    // Update the current sorting state
     this.currentSortColumn = column;
     this.currentSortDirection = direction;
 
+    // Sort only if the direction is 'asc' or 'desc'
     if (direction === 'asc' || direction === 'desc') {
       this.service.sort(column as keyof TicketDto, direction);
     }

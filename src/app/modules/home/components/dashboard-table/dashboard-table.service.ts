@@ -71,56 +71,54 @@ export class DashboardTableService {
   }
 
   private applyFilters() {
-    this.ticketData$.subscribe((tickets) => {
-      let filteredTickets = [...tickets];
+    const currentTickets = this.ticketDataSubject.getValue(); // Get the current tickets directly
+    let filteredTickets = [...currentTickets]; // Work with a copy of the tickets
 
-      // Filter based on search term
-      if (this.searchTerm) {
-        filteredTickets = filteredTickets.filter(
-          (ticket) =>
-            ticket.title
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase()) ||
-            ticket.description
-              .toLowerCase()
-              .includes(this.searchTerm.toLowerCase())
-        );
-      }
+    // Filter based on search term
+    if (this.searchTerm) {
+      filteredTickets = filteredTickets.filter(
+        (ticket) =>
+          ticket.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          ticket.description
+            .toLowerCase()
+            .includes(this.searchTerm.toLowerCase())
+      );
+    }
 
-      // Filter based on date range
-      if (this.startDate && this.endDate) {
-        filteredTickets = filteredTickets.filter((ticket) => {
-          if (ticket.submissionDate) {
-            const submissionDate = new Date(ticket.submissionDate);
-            return (
-              this.startDate instanceof Date &&
-              !isNaN(this.startDate.getTime()) &&
-              this.endDate instanceof Date &&
-              !isNaN(this.endDate.getTime()) &&
-              submissionDate >= this.startDate &&
-              submissionDate <= this.endDate
-            );
-          }
-          return false; // Exclude tickets without a submissionDate
-        });
-      }
+    // Filter based on date range
+    if (this.startDate && this.endDate) {
+      filteredTickets = filteredTickets.filter((ticket) => {
+        if (ticket.submissionDate) {
+          const submissionDate = new Date(ticket.submissionDate);
+          return (
+            this.startDate instanceof Date &&
+            !isNaN(this.startDate.getTime()) &&
+            this.endDate instanceof Date &&
+            !isNaN(this.endDate.getTime()) &&
+            submissionDate >= this.startDate &&
+            submissionDate <= this.endDate
+          );
+        }
+        return false; // Exclude tickets without a submissionDate
+      });
+    }
 
-      // Sorting
-      if (this.sortColumn) {
-        filteredTickets.sort((a, b) => {
-          const aValue = a[this.sortColumn as keyof TicketDto];
-          const bValue = b[this.sortColumn as keyof TicketDto];
+    // Sorting
+    if (this.sortColumn) {
+      filteredTickets.sort((a, b) => {
+        const aValue = a[this.sortColumn as keyof TicketDto];
+        const bValue = b[this.sortColumn as keyof TicketDto];
 
-          if (this.sortDirection === 'asc') {
-            return this.compareValues(aValue, bValue);
-          } else {
-            return this.compareValues(bValue, aValue);
-          }
-        });
-      }
+        if (this.sortDirection === 'asc') {
+          return this.compareValues(aValue, bValue);
+        } else {
+          return this.compareValues(bValue, aValue);
+        }
+      });
+    }
 
-      this.ticketDataSubject.next(filteredTickets);
-    });
+    // Emit the filtered and sorted tickets
+    this.ticketDataSubject.next(filteredTickets);
   }
 
   private compareValues(a: any, b: any): number {
