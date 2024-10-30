@@ -1,0 +1,36 @@
+h2 {
+  margin-top: 20px;
+}
+
+.chart-container {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(300px, 1fr)
+  ); /* Responsive grid */
+  gap: 20px; /* Space between charts */
+}
+
+.chart-container > div {
+  padding: 10px; /* Space around each chart */
+  border: 1px solid #e0e0e0; /* Optional border */
+  border-radius: 8px; /* Optional rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px; /* Space between chart and table */
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #e0e0e0; /* Border for the table */
+  padding: 8px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: #f9f9f9; /* Header background color */
+}

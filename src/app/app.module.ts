@@ -18,6 +18,7 @@ import { LoginModule } from './modules/login/login.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { EditTicketModule } from './modules/edit-ticket/edit-ticket.module';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,6 +40,7 @@ import { EditTicketModule } from './modules/edit-ticket/edit-ticket.module';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgApexchartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
