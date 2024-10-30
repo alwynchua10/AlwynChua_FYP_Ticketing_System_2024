@@ -15,5 +15,7 @@ export class TicketService {
     return this.http.post(this.baseUrl, ticket);
   }
 
-  // Add other methods for getting, updating, and deleting tickets if needed
+  getTickets(): Observable<TicketDto[]> {
+    return this.http.get<TicketDto[]>(this.baseUrl);
+  }
 }

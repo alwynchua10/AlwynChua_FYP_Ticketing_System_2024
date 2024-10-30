@@ -95,8 +95,8 @@ export class DashboardTableService {
             !isNaN(this.startDate.getTime()) &&
             this.endDate instanceof Date &&
             !isNaN(this.endDate.getTime()) &&
-            submissionDate >= this.startDate &&
-            submissionDate <= this.endDate
+            submissionDate >= new Date(this.startDate.setHours(0, 0, 0, 0)) &&
+            submissionDate <= new Date(this.endDate.setHours(23, 59, 59, 999))
           );
         }
         return false;

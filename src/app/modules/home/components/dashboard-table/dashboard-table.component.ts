@@ -1,10 +1,17 @@
-import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  QueryList,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { DashboardTableService } from './dashboard-table.service';
 import { NgbdSortableHeader, SortEvent } from './sortable.directive';
 import { TicketDto } from 'src/app/core/models/ticket.dto';
 import { Router } from '@angular/router';
+import { DatePickerComponent } from '../date-picker/date-picker.component';
 
 @Component({
   selector: 'app-dashboard-table',
@@ -13,6 +20,7 @@ import { Router } from '@angular/router';
   providers: [DashboardTableService, DecimalPipe],
 })
 export class DashboardTableComponent {
+  @ViewChild(DatePickerComponent) datePicker!: DatePickerComponent;
   ticketData$!: Observable<TicketDto[]>;
   currentSortColumn: string = '';
   currentSortDirection: string = '';
@@ -58,6 +66,7 @@ export class DashboardTableComponent {
 
   clearFilters(): void {
     this.service.clearFilters();
+    this.datePicker.resetDates(); // Call the reset method from DatePickerComponent
     this.updateTickets(); // Update tickets after clearing filters
   }
 
