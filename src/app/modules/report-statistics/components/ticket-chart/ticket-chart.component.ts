@@ -1,6 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { TicketService } from 'src/app/core/APIservices/ticket.service';
 import { TicketDto } from 'src/app/core/models/ticket.dto';
+import { Status } from 'src/app/core/models/status';
+import { Priority } from 'src/app/core/models/priority';
+import { Category } from 'src/app/core/models/category';
 
 @Component({
   selector: 'app-ticket-chart',
@@ -15,32 +18,11 @@ export class TicketChartComponent implements OnInit {
   categoryChartData: number[] = [];
   categoryChartLabels: string[] = [];
 
-  statusCounts: { name: string; count: number }[] = []; // To hold status counts
-  priorityCounts: { name: string; count: number }[] = []; // To hold priority counts
-  categoryCounts: { name: string; count: number }[] = []; // To hold category counts
+  statusCounts: { name: string; count: number }[] = [];
+  priorityCounts: { name: string; count: number }[] = [];
+  categoryCounts: { name: string; count: number }[] = [];
 
-  isLoading: boolean = true; // Loading state
-
-  statusChartOptions: any = {
-    chart: {
-      type: 'pie',
-    },
-    labels: this.statusChartLabels,
-  };
-
-  priorityChartOptions: any = {
-    chart: {
-      type: 'pie',
-    },
-    labels: this.priorityChartLabels,
-  };
-
-  categoryChartOptions: any = {
-    chart: {
-      type: 'pie',
-    },
-    labels: this.categoryChartLabels,
-  };
+  isLoading: boolean = true;
 
   constructor(
     private ticketService: TicketService,
@@ -48,14 +30,49 @@ export class TicketChartComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadMetadata();
     this.loadTickets();
+  }
+
+  loadMetadata(): void {
+    this.ticketService.getAllStatuses().subscribe((statuses: Status[]) => {
+      this.statusChartLabels = statuses.map((status) => status.statusName);
+      this.statusCounts = this.statusChartLabels.map((name) => ({
+        name,
+        count: 0,
+      }));
+    });
+
+    this.ticketService
+      .getAllPriorities()
+      .subscribe((priorities: Priority[]) => {
+        this.priorityChartLabels = priorities.map(
+          (priority) => priority.priorityLevel
+        );
+        this.priorityCounts = this.priorityChartLabels.map((name) => ({
+          name,
+          count: 0,
+        }));
+      });
+
+    this.ticketService
+      .getAllCategories()
+      .subscribe((categories: Category[]) => {
+        this.categoryChartLabels = categories.map(
+          (category) => category.categoryName
+        );
+        this.categoryCounts = this.categoryChartLabels.map((name) => ({
+          name,
+          count: 0,
+        }));
+      });
   }
 
   loadTickets(): void {
     this.ticketService.getTickets().subscribe((tickets: TicketDto[]) => {
       this.processTicketData(tickets);
-      this.isLoading = false; // Set loading to false after data is processed
-      this.cd.detectChanges(); // Trigger change detection
+      this.isLoading = false;
+      this.cd.detectChanges();
     });
   }
 
@@ -65,38 +82,39 @@ export class TicketChartComponent implements OnInit {
     const categoryCount: { [key: string]: number } = {};
 
     tickets.forEach((ticket) => {
-      // Count status
-      const statusName = ticket.statusName || 'Unknown';
-      statusCount[statusName] = (statusCount[statusName] || 0) + 1;
+      if (ticket.statusName) {
+        statusCount[ticket.statusName] =
+          (statusCount[ticket.statusName] || 0) + 1;
+      }
 
-      // Count priority
-      const priorityName = ticket.priorityName || 'Unknown';
-      priorityCount[priorityName] = (priorityCount[priorityName] || 0) + 1;
+      if (ticket.priorityName) {
+        priorityCount[ticket.priorityName] =
+          (priorityCount[ticket.priorityName] || 0) + 1;
+      }
 
-      // Count category
-      const categoryName = ticket.categoryName || 'Unknown';
-      categoryCount[categoryName] = (categoryCount[categoryName] || 0) + 1;
+      if (ticket.categoryName) {
+        categoryCount[ticket.categoryName] =
+          (categoryCount[ticket.categoryName] || 0) + 1;
+      }
     });
 
-    this.statusChartLabels = Object.keys(statusCount);
-    this.statusChartData = Object.values(statusCount);
-    this.statusCounts = Object.keys(statusCount).map((key) => ({
-      name: key,
-      count: statusCount[key],
-    }));
+    this.statusCounts.forEach((status) => {
+      status.count = statusCount[status.name] || 0;
+    });
+    this.statusChartData = this.statusCounts.map((status) => status.count);
 
-    this.priorityChartLabels = Object.keys(priorityCount);
-    this.priorityChartData = Object.values(priorityCount);
-    this.priorityCounts = Object.keys(priorityCount).map((key) => ({
-      name: key,
-      count: priorityCount[key],
-    }));
+    this.priorityCounts.forEach((priority) => {
+      priority.count = priorityCount[priority.name] || 0;
+    });
+    this.priorityChartData = this.priorityCounts.map(
+      (priority) => priority.count
+    );
 
-    this.categoryChartLabels = Object.keys(categoryCount);
-    this.categoryChartData = Object.values(categoryCount);
-    this.categoryCounts = Object.keys(categoryCount).map((key) => ({
-      name: key,
-      count: categoryCount[key],
-    }));
+    this.categoryCounts.forEach((category) => {
+      category.count = categoryCount[category.name] || 0;
+    });
+    this.categoryChartData = this.categoryCounts.map(
+      (category) => category.count
+    );
   }
 }

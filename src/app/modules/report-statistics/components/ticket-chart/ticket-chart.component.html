@@ -1,80 +1,82 @@
 <div class="chart-container">
-    <div>
-      <h2>Ticket Status Chart</h2>
-      <div *ngIf="isLoading">Loading chart data...</div>
-      <div *ngIf="!isLoading">
-        <apx-chart 
-          [series]="statusChartData" 
-          [chart]="statusChartOptions.chart" 
-          [labels]="statusChartLabels">
-        </apx-chart>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let status of statusCounts">
-              <td>{{ status.name }}</td>
-              <td>{{ status.count }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  
-    <div>
-      <h2>Ticket Priority Chart</h2>
-      <div *ngIf="isLoading">Loading chart data...</div>
-      <div *ngIf="!isLoading">
-        <apx-chart 
-          [series]="priorityChartData" 
-          [chart]="priorityChartOptions.chart" 
-          [labels]="priorityChartLabels">
-        </apx-chart>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Priority</th>
-              <th>Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let priority of priorityCounts">
-              <td>{{ priority.name }}</td>
-              <td>{{ priority.count }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  
-    <div>
-      <h2>Ticket Category Chart</h2>
-      <div *ngIf="isLoading">Loading chart data...</div>
-      <div *ngIf="!isLoading">
-        <apx-chart 
-          [series]="categoryChartData" 
-          [chart]="categoryChartOptions.chart" 
-          [labels]="categoryChartLabels">
-        </apx-chart>
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Category</th>
-              <th>Count</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let category of categoryCounts">
-              <td>{{ category.name }}</td>
-              <td>{{ category.count }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  <!-- Ticket Status Chart -->
+  <div>
+    <h2>Ticket Status Chart</h2>
+    <div *ngIf="isLoading">Loading chart data...</div>
+    <div *ngIf="!isLoading">
+      <apx-chart
+        [series]="statusChartData"
+        [chart]="{ type: 'pie', height: 350 }"
+        [labels]="statusChartLabels">
+      </apx-chart>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let status of statusCounts">
+            <td>{{ status.name }}</td>
+            <td>{{ status.count }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
-  
+
+  <!-- Ticket Priority Chart -->
+  <div>
+    <h2>Ticket Priority Chart</h2>
+    <div *ngIf="isLoading">Loading chart data...</div>
+    <div *ngIf="!isLoading">
+      <apx-chart
+        [series]="priorityChartData"
+        [chart]="{ type: 'pie', height: 350 }"
+        [labels]="priorityChartLabels">
+      </apx-chart>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Priority</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let priority of priorityCounts">
+            <td>{{ priority.name }}</td>
+            <td>{{ priority.count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Ticket Category Chart -->
+  <div>
+    <h2>Ticket Category Chart</h2>
+    <div *ngIf="isLoading">Loading chart data...</div>
+    <div *ngIf="!isLoading">
+      <apx-chart
+        [series]="categoryChartData"
+        [chart]="{ type: 'pie', height: 350 }"
+        [labels]="categoryChartLabels">
+      </apx-chart>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of categoryCounts">
+            <td>{{ category.name }}</td>
+            <td>{{ category.count }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
