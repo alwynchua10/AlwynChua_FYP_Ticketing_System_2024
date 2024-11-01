@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { UserService } from 'src/app/core/APIservices/user.service'; // Ensure this points to your service
+import { RoleDto } from 'src/app/core/models/role.dto';
 import { UserDto } from 'src/app/core/models/user.dto';
 import { ToastService } from 'src/app/shared/components/toast/toast.service';
 
@@ -19,9 +20,10 @@ export class UserTableComponent implements OnInit {
 
   userToDeleteId: number | undefined;
   data: UserDto[] = [];
+  roles: RoleDto[] = []; // New array for roles
   editMode = false;
   editUser: UserDto | null = null;
-  ngUser: UserDto = { userName: '', userEmail: '', roleID: null }; // Initialize a UserDto object
+  ngUser: UserDto = { userName: '', userEmail: '', roleID: null, roleName: '' }; // Initialize a UserDto object
   isLoading = false;
 
   constructor(
@@ -31,7 +33,8 @@ export class UserTableComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadUsers(); // Load users when the component initializes
+    this.loadUsers();
+    this.loadRoles();
   }
 
   loadUsers() {
@@ -44,12 +47,24 @@ export class UserTableComponent implements OnInit {
           userName: user.userName,
           userEmail: user.userEmail,
           roleID: user.roleID, // Provide a default value if RoleID can be undefined
+          roleName: user.roleName || '', // Ensure roleName is handled
         }));
         this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching users:', error);
         this.isLoading = false;
+      }
+    );
+  }
+
+  loadRoles() {
+    this.userService.getRoles().subscribe(
+      (data: RoleDto[]) => {
+        this.roles = data; // Store fetched roles
+      },
+      (error) => {
+        console.error('Error fetching roles:', error);
       }
     );
   }
@@ -87,7 +102,7 @@ export class UserTableComponent implements OnInit {
     }
 
     this.editMode = false;
-    this.ngUser = { userName: '', userEmail: '', roleID: null }; // Reset ngUser after save
+    this.ngUser = { userName: '', userEmail: '', roleID: null, roleName: '' }; // Reset ngUser after save
   }
 
   onEdit(user: UserDto) {
@@ -139,7 +154,7 @@ export class UserTableComponent implements OnInit {
   }
 
   closeModal() {
-    this.ngUser = { userName: '', userEmail: '', roleID: null }; // Reset user data
+    this.ngUser = { userName: '', userEmail: '', roleID: null, roleName: '' }; // Reset user data
     this.ngxSmartModalService.close('myModal');
     this.editMode = false;
   }

@@ -5,12 +5,14 @@ import { tap } from 'rxjs/operators';
 import { UserDto, LoginDto } from '../models/user.dto';
 import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
+import { RoleDto } from '../models/role.dto';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
   private apiUrl = 'https://localhost:7179/api/Users';
+  private roleUrl = 'https://localhost:7179/api/Roles';
   private token: string | null = null;
 
   constructor(private http: HttpClient, private router: Router) {}
@@ -37,6 +39,10 @@ export class UserService {
   // Get a user by ID
   getUserById(id: number): Observable<UserDto> {
     return this.http.get<UserDto>(`${this.apiUrl}/${id}`);
+  }
+
+  getRoles(): Observable<RoleDto[]> {
+    return this.http.get<RoleDto[]>(this.roleUrl); // Adjust the endpoint as necessary
   }
 
   // Register a new user
@@ -91,6 +97,7 @@ export class UserService {
       userName: userData.userName,
       userEmail: userData.userEmail,
       roleID: userData.roleID,
+      roleName: userData.roleName,
     });
   }
 

@@ -4,6 +4,7 @@ export interface UserDto {
   userEmail: string;
   passwordHash?: string;
   roleID: number | null;
+  roleName?: string;
 }
 
 export interface LoginDto {
