@@ -1,32 +1,29 @@
 <div class="header-container">
-
     <div class="header-container-left">
-        <div>Welcome, (Name)</div>
-        <div></div>
-        <div>(Current Page)</div>
+      <div>Welcome, {{ userName }}</div>
     </div>
-
+  
     <div class="header-container-right">
-        <!-- Admin buttons -->
-        <div *ngIf="userRole === 'admin'">
-            <button (click)="navigateToHome()">Tickets</button>
-            <button (click)="navigateToCategories()">Categories</button>
-            <button (click)="navigateToUserManagement()">User Management</button>
-            <button (click)="navigateToReportStatistics()">Report Statistics</button>
-            <button (click)="navigateToCreateTicket()">Create Ticket</button>
-        </div>
-
-        <!-- User buttons -->
-        <div *ngIf="userRole === 'user'">
-            <button (click)="navigateToHome()">My Tickets</button>
-            <button (click)="navigateToCreateTicket()">Create Ticket</button>
-        </div>
-
-        <!-- Agent buttons -->
-        <div *ngIf="userRole === 'agent'">
-            <button (click)="navigateToHome()">Assigned Tickets</button>
-            <button (click)="navigateToCreateTicket()">Create Ticket</button>
-        </div>
+      <!-- Admin buttons -->
+      <div *ngIf="userRole === 'admin'">
+        <button (click)="navigateToHome()">Tickets</button>
+        <button (click)="navigateToCategories()">Categories</button>
+        <button (click)="navigateToUserManagement()">User Management</button>
+        <button (click)="navigateToReportStatistics()">Report Statistics</button>
+        <button (click)="navigateToCreateTicket()">Create Ticket</button>
+      </div>
+  
+      <!-- User buttons -->
+      <div *ngIf="userRole === 'user'">
+        <button (click)="navigateToHome()">My Tickets</button>
+        <button (click)="navigateToCreateTicket()">Create Ticket</button>
+      </div>
+  
+      <!-- Agent buttons -->
+      <div *ngIf="userRole === 'agent'">
+        <button (click)="navigateToHome()">Assigned Tickets</button>
+        <button (click)="navigateToCreateTicket()">Create Ticket</button>
+      </div>
     </div>
-
-</div>
+  </div>
+  

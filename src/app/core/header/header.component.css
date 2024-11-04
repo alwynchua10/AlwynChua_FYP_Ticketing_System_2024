@@ -23,7 +23,6 @@ header nav .logo img {
   margin-right: 40px;
 }
 
-
 header nav ul {
   list-style: none;
   display: flex;
@@ -46,4 +45,3 @@ header nav ul li a:hover {
 header nav ul li fa-icon {
   cursor: pointer;
 }
-

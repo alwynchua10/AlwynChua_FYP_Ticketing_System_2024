@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/app/core/APIservices/login.service';
+import { NgForm } from '@angular/forms';
 import { DashboardTableService } from 'src/app/modules/home/components/dashboard-table/dashboard-table.service';
+import { ToastService } from 'src/app/shared/components/toast/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -11,6 +13,11 @@ import { DashboardTableService } from 'src/app/modules/home/components/dashboard
 })
 export class LoginComponent {
   faCircleInfo = faCircleInfo;
+  @ViewChild('myForm') form!: NgForm;
+  @ViewChild('successTpl') successTpl!: TemplateRef<any>;
+  @ViewChild('editTpl') editTpl!: TemplateRef<any>;
+  @ViewChild('deleteTpl') deleteTpl!: TemplateRef<any>;
+  @ViewChild('dangerTpl') dangerTpl!: TemplateRef<any>;
 
   email: string = '';
   password: string = '';
@@ -19,7 +26,8 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private loginService: LoginService,
-    private dashboardTableService: DashboardTableService // Inject DashboardTableService
+    private dashboardTableService: DashboardTableService, // Inject DashboardTableService
+    private toastService: ToastService
   ) {}
 
   goToRegister(): void {
@@ -32,6 +40,7 @@ export class LoginComponent {
         // Handle successful login
         const userId = localStorage.getItem('userID'); // Retrieve user ID from local storage
         const roleId = localStorage.getItem('roleID'); // Retrieve role ID from local storage
+        this.triggerSuccessCreate();
 
         if (userId && roleId) {
           this.dashboardTableService.setUserAndRole(+userId, +roleId); // Set user ID and role ID in DashboardTableService
@@ -43,7 +52,24 @@ export class LoginComponent {
         // Handle error
         this.errorMessage =
           err.error.title || 'Login failed. Please try again.';
+        this.triggerEmptyToast();
       },
     });
+  }
+
+  triggerSuccessCreate() {
+    this.toastService.showSuccess(this.successTpl);
+  }
+
+  triggerSuccessEdit() {
+    this.toastService.showSuccess(this.editTpl);
+  }
+
+  triggerSuccessDelete() {
+    this.toastService.showSuccess(this.deleteTpl);
+  }
+
+  triggerEmptyToast() {
+    this.toastService.showDanger(this.dangerTpl);
   }
 }
