@@ -26,7 +26,7 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private loginService: LoginService,
-    private dashboardTableService: DashboardTableService, // Inject DashboardTableService
+    private dashboardTableService: DashboardTableService,
     private toastService: ToastService
   ) {}
 
@@ -37,21 +37,17 @@ export class LoginComponent {
   onSubmit(): void {
     this.loginService.login(this.email, this.password).subscribe({
       next: (response) => {
-        // Handle successful login
-        const userId = localStorage.getItem('userID'); // Retrieve user ID from local storage
-        const roleId = localStorage.getItem('roleID'); // Retrieve role ID from local storage
-        this.triggerSuccessCreate();
+        const userId = localStorage.getItem('userID');
+        const roleId = localStorage.getItem('roleID');
+        // this.triggerSuccessCreate();
 
         if (userId && roleId) {
-          this.dashboardTableService.setUserAndRole(+userId, +roleId); // Set user ID and role ID in DashboardTableService
+          this.dashboardTableService.setUserAndRole(+userId, +roleId);
         }
 
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        // Handle error
-        this.errorMessage =
-          err.error.title || 'Login failed. Please try again.';
         this.triggerEmptyToast();
       },
     });

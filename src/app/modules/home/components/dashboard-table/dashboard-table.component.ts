@@ -25,10 +25,9 @@ export class DashboardTableComponent {
   currentSortColumn: string = '';
   currentSortDirection: string = '';
 
-  // Pagination properties
-  currentPage: number = 1; // Current page number
-  itemsPerPage: number = 10; // Tickets per page
-  totalTickets: number = 0; // Total number of tickets
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalTickets: number = 0;
 
   @ViewChildren(NgbdSortableHeader) headers!: QueryList<NgbdSortableHeader>;
 

@@ -1,22 +1,19 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
-import { UserService } from './user.service'; // Import UserService
-import { LoginDto } from '../models/user.dto';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LoginService {
-  constructor(private userService: UserService) {} // Inject UserService
+  constructor(private userService: UserService) {}
 
   login(userEmail: string, password: string): Observable<any> {
-    return this.userService.login(userEmail, password); // Delegate to UserService
+    return this.userService.login(userEmail, password);
   }
 
   isAuthenticated(): boolean {
-    const token = this.userService.getToken(); // Use the method from UserService
-    return !!token; // Returns true if the token exists, false otherwise
+    const token = this.userService.getToken();
+    return !!token;
   }
 }

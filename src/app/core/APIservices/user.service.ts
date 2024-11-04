@@ -61,9 +61,9 @@ export class UserService {
       .pipe(
         tap((response) => {
           if (response.token && response.userID && response.roleID) {
-            localStorage.setItem('token', response.token); // Store the token
-            localStorage.setItem('userID', response.userID); // Store the UserID
-            localStorage.setItem('roleID', response.roleID); // Store the RoleID
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('userID', response.userID);
+            localStorage.setItem('roleID', response.roleID);
           } else {
             console.error('No token, UserID, or RoleID found in response');
           }
@@ -87,8 +87,8 @@ export class UserService {
 
   getToken(): string | null {
     const tokenFromStorage = localStorage.getItem('token');
-    console.log('Retrieved Token:', tokenFromStorage); // Log for debugging
-    return this.token || tokenFromStorage; // Return token from memory or storage
+    console.log('Retrieved Token:', tokenFromStorage);
+    return this.token || tokenFromStorage;
   }
 
   // Update user details
