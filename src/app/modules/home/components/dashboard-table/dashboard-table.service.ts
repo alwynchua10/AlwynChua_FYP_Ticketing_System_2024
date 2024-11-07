@@ -9,6 +9,7 @@ import { TicketDto } from 'src/app/core/models/ticket.dto';
 })
 export class DashboardTableService {
   private apiUrl = 'https://localhost:7179/api/Tickets';
+
   private ticketDataSubject = new BehaviorSubject<TicketDto[]>([]);
   ticketData$: Observable<TicketDto[]> = this.ticketDataSubject.asObservable();
   public searchTerm: string = '';
@@ -19,13 +20,12 @@ export class DashboardTableService {
   public loading$ = new BehaviorSubject<boolean>(false);
   private userId: number | null = null;
   private roleId: number | null = null;
-  private fullTicketData: TicketDto[] = []; // Holds all fetched tickets
+  private fullTicketData: TicketDto[] = [];
   private totalTicketsSubject = new BehaviorSubject<number>(0);
   totalTickets$ = this.totalTicketsSubject.asObservable();
 
-  // Pagination properties
-  public currentPage: number = 1; // Current page
-  public itemsPerPage: number = 10; // Number of items per page
+  public currentPage: number = 1;
+  public itemsPerPage: number = 10;
 
   constructor(private http: HttpClient) {}
 
@@ -44,8 +44,8 @@ export class DashboardTableService {
 
     this.http.get<TicketDto[]>(url).subscribe(
       (tickets) => {
-        this.fullTicketData = tickets; // Store all tickets
-        this.applyFilters(); // Apply filters immediately after fetching
+        this.fullTicketData = tickets; // stores all the fetched tickets
+        this.applyFilters();
         this.loading$.next(false);
       },
       (error) => {
@@ -65,14 +65,14 @@ export class DashboardTableService {
     this.searchTerm = '';
     this.startDate = null;
     this.endDate = null;
-    this.currentPage = 1; // Reset to the first page
+    this.currentPage = 1;
     this.applyFilters();
   }
 
   public applyFilters() {
-    let filteredTickets = [...this.fullTicketData]; // Start with the full dataset
+    let filteredTickets = [...this.fullTicketData]; // use the fetched ticekts based on userID and roleID to filter
 
-    // Filter based on search term
+    // filter with search
     if (this.searchTerm) {
       const searchLower = this.searchTerm.toLowerCase();
       filteredTickets = filteredTickets.filter(
@@ -81,11 +81,13 @@ export class DashboardTableService {
           (ticket.description &&
             ticket.description.toLowerCase().includes(searchLower)) ||
           (ticket.userName &&
-            ticket.userName.toLowerCase().includes(searchLower)) // Include filtering for submitted by
+            ticket.userName.toLowerCase().includes(searchLower)) ||
+          (ticket.ticketID !== undefined &&
+            ticket.ticketID.toString().toLowerCase().includes(searchLower))
       );
     }
 
-    // Filter based on date range
+    // filter by date range
     if (this.startDate && this.endDate) {
       filteredTickets = filteredTickets.filter((ticket) => {
         if (ticket.submissionDate) {
@@ -103,7 +105,7 @@ export class DashboardTableService {
       });
     }
 
-    // Sorting
+    // sorting
     if (this.sortColumn) {
       filteredTickets.sort((a, b) => {
         const aValue = a[this.sortColumn as keyof TicketDto];
@@ -117,19 +119,18 @@ export class DashboardTableService {
       });
     }
 
-    // Update totalTickets count based on filtered results
     const totalTickets = filteredTickets.length;
 
-    // Pagination: only after filtering and sorting
+    // pagination AFTER the filtering and sorting
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
     const paginatedTickets = filteredTickets.slice(startIndex, endIndex);
 
-    // Emit the paginated and sorted subset
+    // emit sorted and paginated tickets
     this.ticketDataSubject.next(paginatedTickets);
 
-    // Emit total tickets count
-    this.totalTicketsSubject.next(totalTickets); // You need to define a BehaviorSubject for total tickets
+    // emit total ticket count
+    this.totalTicketsSubject.next(totalTickets);
   }
 
   private compareValues(a: any, b: any): number {
@@ -148,15 +149,6 @@ export class DashboardTableService {
     this.sortColumn = column;
     this.sortDirection = direction;
     this.applyFilters();
-  }
-
-  public createTicket(ticket: TicketDto): Observable<TicketDto> {
-    return this.http.post<TicketDto>(this.apiUrl, ticket).pipe(
-      map((newTicket) => {
-        this.fetchTickets(); // Refresh the ticket list after creation
-        return newTicket;
-      })
-    );
   }
 
   public updateTicket(
@@ -188,6 +180,6 @@ export class DashboardTableService {
   changePage(page: number, itemsPerPage: number) {
     this.currentPage = page;
     this.itemsPerPage = itemsPerPage;
-    this.applyFilters(); // Reapply filters to get new tickets based on page
+    this.applyFilters();
   }
 }

@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ReportFormComponent } from './components/report-form/report-form.component';
 import { CoreModule } from '../core/core.module';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,7 +13,7 @@ import {
 import { ToastService } from './components/toast/toast.service';
 
 @NgModule({
-  declarations: [ReportFormComponent, ToastsContainerComponent],
+  declarations: [ToastsContainerComponent],
   imports: [
     CommonModule,
     CoreModule,
@@ -26,6 +25,6 @@ import { ToastService } from './components/toast/toast.service';
     NgbPaginationModule,
   ],
   providers: [ToastService],
-  exports: [ReportFormComponent, ToastsContainerComponent],
+  exports: [ToastsContainerComponent],
 })
 export class SharedModule {}

@@ -45,28 +45,26 @@ export class DashboardTableComponent {
       console.error('No user ID or role ID found in local storage');
     }
 
-    // Update total ticket count and initialize the page when tickets load
     this.service.ticketData$.subscribe((tickets) => {
-      this.totalTickets = tickets.length; // Update total tickets
+      this.totalTickets = tickets.length;
     });
 
-    // Subscribe to total tickets to enable pagination logic
     this.service.totalTickets$.subscribe((total) => {
-      this.totalTickets = total; // Update totalTickets for pagination logic
+      this.totalTickets = total;
     });
   }
 
   setDateRange(startDate: Date | null, endDate: Date | null) {
     console.log('Received startDate:', startDate);
     console.log('Received endDate:', endDate);
-    this.service.setDateRange(startDate, endDate); // No conversion needed
-    this.updateTickets(); // Update tickets after setting date range
+    this.service.setDateRange(startDate, endDate);
+    this.updateTickets();
   }
 
   clearFilters(): void {
     this.service.clearFilters();
-    this.datePicker.resetDates(); // Call the reset method from DatePickerComponent
-    this.updateTickets(); // Update tickets after clearing filters
+    this.datePicker.resetDates();
+    this.updateTickets();
   }
 
   hasFiltersApplied(): boolean {
@@ -77,29 +75,24 @@ export class DashboardTableComponent {
   }
 
   onSort({ column, direction }: SortEvent) {
-    // If the current column and direction are the same, don't proceed
     if (
       this.currentSortColumn === column &&
       this.currentSortDirection === direction
     ) {
-      return; // Prevent unnecessary sorting
+      return;
     }
-
-    // Reset other headers' directions
     this.headers.forEach((header) => {
       if (header.sortable !== column) {
         header.direction = '';
       }
     });
 
-    // Update the current sorting state
     this.currentSortColumn = column;
     this.currentSortDirection = direction;
 
-    // Sort only if the direction is 'asc' or 'desc'
     if (direction === 'asc' || direction === 'desc') {
       this.service.sort(column as keyof TicketDto, direction);
-      this.updateTickets(); // Update tickets after sorting
+      this.updateTickets();
     }
   }
 
@@ -110,26 +103,26 @@ export class DashboardTableComponent {
   getSortIcon(column: string): string {
     if (this.currentSortColumn !== column) return '';
 
-    return this.currentSortDirection === 'asc' ? '↑' : '↓'; // Up and down arrows
+    return this.currentSortDirection === 'asc' ? '↑' : '↓';
   }
 
   editTicket(ticketID: number) {
     this.router.navigate(['/edit-ticket', ticketID]);
   }
 
-  // Pagination methods
+  // pagination
   updateTickets() {
-    this.service.applyFilters(); // Apply filters immediately
-    this.service.changePage(this.currentPage, this.itemsPerPage); // Update tickets based on current page
+    this.service.applyFilters();
+    this.service.changePage(this.currentPage, this.itemsPerPage);
   }
 
   changePage(page: number) {
-    if (page < 1 || page > this.totalPages) return; // Guard for invalid pages
-    this.currentPage = page; // Update current page
-    this.service.changePage(this.currentPage, this.itemsPerPage); // Update tickets based on new page
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.service.changePage(this.currentPage, this.itemsPerPage);
   }
 
   get totalPages() {
-    return Math.ceil(this.totalTickets / this.itemsPerPage); // Calculate total pages
+    return Math.ceil(this.totalTickets / this.itemsPerPage);
   }
 }

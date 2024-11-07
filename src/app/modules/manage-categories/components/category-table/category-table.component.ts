@@ -34,18 +34,18 @@ export class CategoryTableComponent implements OnInit {
   }
 
   loadCategories() {
-    this.isLoading = true; // Set isLoading to true when loading starts
+    this.isLoading = true;
     this.categoryService.getCategories().subscribe(
       (data: any[]) => {
         this.data = data.map((category) => ({
-          id: category.categoryID, // Include category ID
+          id: category.categoryID,
           category: category.categoryName,
         }));
-        this.isLoading = false; // Set isLoading to false when loading is complete
+        this.isLoading = false;
       },
       (error) => {
         console.error('Error fetching categories:', error);
-        this.isLoading = false; // Set isLoading to false in case of error
+        this.isLoading = false;
       }
     );
   }
@@ -60,11 +60,10 @@ export class CategoryTableComponent implements OnInit {
     };
     if (this.editMode) {
       const categoryId = this.data[this.editIndex].id;
-      // Include categoryId in categoryData
       categoryData.categoryID = categoryId;
       this.categoryService.updateCategory(categoryId, categoryData).subscribe(
         () => {
-          this.loadCategories(); // Reload categories after updating
+          this.loadCategories();
           this.closeModal();
           this.triggerSuccessEdit();
         },
@@ -119,13 +118,12 @@ export class CategoryTableComponent implements OnInit {
 
   openConfirmationModal(categoryId: number) {
     this.ngxSmartModalService.getModal('confirmationModal').open();
-    // Store the category ID in a property to use it when confirming deletion
     this.categoryToDeleteId = categoryId;
   }
 
   deleteCategory() {
     if (this.categoryToDeleteId !== undefined) {
-      console.log('Deleting category with ID:', this.categoryToDeleteId); // Add this line
+      console.log('Deleting category with ID:', this.categoryToDeleteId);
       this.categoryService.deleteCategory(this.categoryToDeleteId).subscribe(
         () => {
           this.loadCategories();
@@ -134,14 +132,12 @@ export class CategoryTableComponent implements OnInit {
         },
         (error) => {
           console.error('Error deleting category:', error);
-          // Optionally, display an error message to the user
         }
       );
     }
   }
 
   closeConfirmationModal() {
-    // Reset the categoryToDeleteId property and close the confirmation modal
     this.categoryToDeleteId = undefined;
     this.ngxSmartModalService.getModal('confirmationModal').close();
   }

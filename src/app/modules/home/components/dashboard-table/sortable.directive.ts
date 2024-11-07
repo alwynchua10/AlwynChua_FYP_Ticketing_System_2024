@@ -27,11 +27,10 @@ export class NgbdSortableHeader {
   @Output() sort = new EventEmitter<SortEvent>();
 
   rotate() {
-    this.direction = rotate[this.direction]; // Rotate the direction
+    this.direction = rotate[this.direction];
     if (this.direction === '') {
-      // If direction is blank, emit a sort event with direction as 'asc'
       this.direction = 'asc';
     }
-    this.sort.emit({ column: this.sortable, direction: this.direction }); // Emit the new sort event
+    this.sort.emit({ column: this.sortable, direction: this.direction });
   }
 }
